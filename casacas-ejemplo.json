@@ -7,7 +7,7 @@
     "numero": 20,
     "talle": "S",
     "precio": 87.35,
-    "imagenUrl": "https://example.com/camisetas/San-Lorenzo-20.png",
+    "imagenUrl": "https://acdn-us.mitiendanube.com/stores/006/912/889/products/whatsapp-image-2026-03-17-at-9-32-45-am-ecb517796ede325f1717738558989828-480-0.webp",
     "descripcion": "Camiseta oficial de San Lorenzo edición 2014 de Ortigoza #20",
     "stock": 10,
     "activo": true
@@ -20,7 +20,7 @@
     "numero": 10,
     "talle": "L",
     "precio": 112.5,
-    "imagenUrl": "https://example.com/camisetas/Boca-Juniors-10.png",
+    "imagenUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRakuG4J_LkHKnXTgLC0DGVXsWDExSdpD4RR5ygBnRgkQ&s=10",
     "descripcion": "Camiseta oficial de Boca Juniors edición 2000 de Riquelme #10",
     "stock": 8,
     "activo": true
@@ -33,7 +33,7 @@
     "numero": 10,
     "talle": "M",
     "precio": 139.9,
-    "imagenUrl": "https://example.com/camisetas/FC-Barcelona-10.png",
+    "imagenUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5DNdG1zUgj4y9DWaQSaeTLD-QcSN6jeyRdR5yIRJLmL2KEhtYZLMH22fS&s=10",
     "descripcion": "Camiseta oficial de FC Barcelona edición 2011 de Messi #10",
     "stock": 20,
     "activo": true
@@ -46,7 +46,7 @@
     "numero": 7,
     "talle": "M",
     "precio": 96.2,
-    "imagenUrl": "https://example.com/camisetas/Manchester-United-7.png",
+    "imagenUrl": "https://c8.alamy.com/comp/HTCB13/david-beckham-manchester-united-fc-22-may-1999-HTCB13.jpg",
     "descripcion": "Camiseta oficial de Manchester United edición 1999 de Beckham #7",
     "stock": 4,
     "activo": true
@@ -59,7 +59,7 @@
     "numero": 22,
     "talle": "L",
     "precio": 74.8,
-    "imagenUrl": "https://example.com/camisetas/AC-Milan-22.png",
+    "imagenUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTaWN2Erfs736S_d71etROTjZ9jbqQrEWcoew13D3s3phSQ0cywJ0_Rxg&s=10",
     "descripcion": "Camiseta oficial de AC Milan edición 2007 de Kaka #22",
     "stock": 7,
     "activo": true
