@@ -1,0 +1,67 @@
+[
+  {
+    "equipo": "San Lorenzo",
+    "liga": "Liga Profesional",
+    "anio": 2014,
+    "jugador": "Ortigoza",
+    "numero": 20,
+    "talle": "S",
+    "precio": 87.35,
+    "imagenUrl": "https://example.com/camisetas/San-Lorenzo-20.png",
+    "descripcion": "Camiseta oficial de San Lorenzo edición 2014 de Ortigoza #20",
+    "stock": 10,
+    "activo": true
+  },
+  {
+    "equipo": "Boca Juniors",
+    "liga": "Liga Profesional",
+    "anio": 2000,
+    "jugador": "Riquelme",
+    "numero": 10,
+    "talle": "L",
+    "precio": 112.5,
+    "imagenUrl": "https://example.com/camisetas/Boca-Juniors-10.png",
+    "descripcion": "Camiseta oficial de Boca Juniors edición 2000 de Riquelme #10",
+    "stock": 8,
+    "activo": true
+  },
+  {
+    "equipo": "FC Barcelona",
+    "liga": "LaLiga",
+    "anio": 2011,
+    "jugador": "Messi",
+    "numero": 10,
+    "talle": "M",
+    "precio": 139.9,
+    "imagenUrl": "https://example.com/camisetas/FC-Barcelona-10.png",
+    "descripcion": "Camiseta oficial de FC Barcelona edición 2011 de Messi #10",
+    "stock": 20,
+    "activo": true
+  },
+  {
+    "equipo": "Manchester United",
+    "liga": "Premier League",
+    "anio": 1999,
+    "jugador": "Beckham",
+    "numero": 7,
+    "talle": "M",
+    "precio": 96.2,
+    "imagenUrl": "https://example.com/camisetas/Manchester-United-7.png",
+    "descripcion": "Camiseta oficial de Manchester United edición 1999 de Beckham #7",
+    "stock": 4,
+    "activo": true
+  },
+  {
+    "equipo": "AC Milan",
+    "liga": "Serie A",
+    "anio": 2007,
+    "jugador": "Kaka",
+    "numero": 22,
+    "talle": "L",
+    "precio": 74.8,
+    "imagenUrl": "https://example.com/camisetas/AC-Milan-22.png",
+    "descripcion": "Camiseta oficial de AC Milan edición 2007 de Kaka #22",
+    "stock": 7,
+    "activo": true
+  }
+]
