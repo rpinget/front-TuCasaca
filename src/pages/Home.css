@@ -1,0 +1,7 @@
+.home__filtros { margin: 1rem 0; }
+.home__filtros select { padding: 0.4rem; border-radius: 4px; }
+.home__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
