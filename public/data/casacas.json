@@ -1,0 +1,176 @@
+[
+  {
+    "id": 1,
+    "equipo": {
+      "id": 1,
+      "nombre": "Boca Juniors",
+      "liga": {
+        "id": 1,
+        "nombre": "Liga Profesional",
+        "pais": "Argentina"
+      }
+    },
+    "liga": {
+      "id": 1,
+      "nombre": "Liga Profesional",
+      "pais": "Argentina"
+    },
+    "anio": 2000,
+    "jugador": "Riquelme",
+    "numero": 10,
+    "talle": "M",
+    "precio": 95000.0,
+    "stock": 5,
+    "descripcion": "Camiseta titular Boca Juniors 2000",
+    "imagenUrl": "https://placehold.co/400x400?text=Boca+Juniors+2000",
+    "creadorId": 1,
+    "creadorNombreUsuario": "admin",
+    "activo": true,
+    "fechaCreacion": "2026-10-01T10:00:00"
+  },
+  {
+    "id": 2,
+    "equipo": {
+      "id": 5,
+      "nombre": "FC Barcelona",
+      "liga": {
+        "id": 2,
+        "nombre": "LaLiga",
+        "pais": "España"
+      }
+    },
+    "liga": {
+      "id": 2,
+      "nombre": "LaLiga",
+      "pais": "España"
+    },
+    "anio": 2009,
+    "jugador": "Messi",
+    "numero": 10,
+    "talle": "L",
+    "precio": 120000.0,
+    "stock": 3,
+    "descripcion": "Camiseta titular FC Barcelona 2009",
+    "imagenUrl": "https://placehold.co/400x400?text=FC+Barcelona+2009",
+    "creadorId": 1,
+    "creadorNombreUsuario": "admin",
+    "activo": true,
+    "fechaCreacion": "2026-10-01T10:00:00"
+  },
+  {
+    "id": 3,
+    "equipo": {
+      "id": 6,
+      "nombre": "Liverpool",
+      "liga": {
+        "id": 3,
+        "nombre": "Premier League",
+        "pais": "Inglaterra"
+      }
+    },
+    "liga": {
+      "id": 3,
+      "nombre": "Premier League",
+      "pais": "Inglaterra"
+    },
+    "anio": 2005,
+    "jugador": "Gerrard",
+    "numero": 8,
+    "talle": "M",
+    "precio": 110000.0,
+    "stock": 0,
+    "descripcion": "Camiseta titular Liverpool 2005",
+    "imagenUrl": "https://placehold.co/400x400?text=Liverpool+2005",
+    "creadorId": 1,
+    "creadorNombreUsuario": "admin",
+    "activo": true,
+    "fechaCreacion": "2026-10-01T10:00:00"
+  },
+  {
+    "id": 4,
+    "equipo": {
+      "id": 4,
+      "nombre": "Real Madrid",
+      "liga": {
+        "id": 2,
+        "nombre": "LaLiga",
+        "pais": "España"
+      }
+    },
+    "liga": {
+      "id": 2,
+      "nombre": "LaLiga",
+      "pais": "España"
+    },
+    "anio": 2002,
+    "jugador": "Zidane",
+    "numero": 5,
+    "talle": "L",
+    "precio": 115000.0,
+    "stock": 4,
+    "descripcion": "Camiseta titular Real Madrid 2002",
+    "imagenUrl": "https://placehold.co/400x400?text=Real+Madrid+2002",
+    "creadorId": 1,
+    "creadorNombreUsuario": "admin",
+    "activo": true,
+    "fechaCreacion": "2026-10-01T10:00:00"
+  },
+  {
+    "id": 5,
+    "equipo": {
+      "id": 2,
+      "nombre": "River Plate",
+      "liga": {
+        "id": 1,
+        "nombre": "Liga Profesional",
+        "pais": "Argentina"
+      }
+    },
+    "liga": {
+      "id": 1,
+      "nombre": "Liga Profesional",
+      "pais": "Argentina"
+    },
+    "anio": 1996,
+    "jugador": "Francescoli",
+    "numero": 10,
+    "talle": "S",
+    "precio": 90000.0,
+    "stock": 6,
+    "descripcion": "Camiseta titular River Plate 1996",
+    "imagenUrl": "https://placehold.co/400x400?text=River+Plate+1996",
+    "creadorId": 1,
+    "creadorNombreUsuario": "admin",
+    "activo": true,
+    "fechaCreacion": "2026-10-01T10:00:00"
+  },
+  {
+    "id": 6,
+    "equipo": {
+      "id": 3,
+      "nombre": "San Lorenzo",
+      "liga": {
+        "id": 1,
+        "nombre": "Liga Profesional",
+        "pais": "Argentina"
+      }
+    },
+    "liga": {
+      "id": 1,
+      "nombre": "Liga Profesional",
+      "pais": "Argentina"
+    },
+    "anio": 2014,
+    "jugador": "Ortigoza",
+    "numero": 20,
+    "talle": "S",
+    "precio": 87350.0,
+    "stock": 10,
+    "descripcion": "Camiseta titular San Lorenzo 2014",
+    "imagenUrl": "https://placehold.co/400x400?text=San+Lorenzo+2014",
+    "creadorId": 1,
+    "creadorNombreUsuario": "admin",
+    "activo": true,
+    "fechaCreacion": "2026-10-01T10:00:00"
+  }
+]

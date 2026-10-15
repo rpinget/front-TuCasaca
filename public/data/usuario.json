@@ -1,0 +1,12 @@
+{
+  "id": 2,
+  "nombreUsuario": "ana.gomez",
+  "nombre": "Ana",
+  "apellido": "Gómez",
+  "email": "ana.gomez@tucasaca.com",
+  "fechaNacimiento": "1998-05-14",
+  "sexo": "FEMENINO",
+  "rol": "USUARIO",
+  "activo": true,
+  "fechaCreacion": "2026-10-01T10:00:00"
+}
