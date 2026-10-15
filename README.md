@@ -106,8 +106,5 @@ cambiar solamente la URL.
 | ana.gomez@tucasaca.com | usuario123 | USUARIO |
 | juan.perez@tucasaca.com | usuario123 | USUARIO |
 
-## Conexión con el back (más adelante)
+## Conexión con el back ()
 
-El back corre en http://localhost:8080 y ya tiene CORS habilitado para el front.
-Para conectarlo hay que reemplazar las URLs `/data/*.json` por los endpoints
-`/api/...` y enviar el token JWT en el header `Authorization: Bearer <token>`.
