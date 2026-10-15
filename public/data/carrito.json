@@ -1,0 +1,79 @@
+{
+  "id": 1,
+  "usuarioId": 2,
+  "estado": "ACTIVO",
+  "items": [
+    {
+      "id": 1,
+      "casaca": {
+        "id": 1,
+        "equipo": {
+          "id": 1,
+          "nombre": "Boca Juniors",
+          "liga": {
+            "id": 1,
+            "nombre": "Liga Profesional",
+            "pais": "Argentina"
+          }
+        },
+        "liga": {
+          "id": 1,
+          "nombre": "Liga Profesional",
+          "pais": "Argentina"
+        },
+        "anio": 2000,
+        "jugador": "Riquelme",
+        "numero": 10,
+        "talle": "M",
+        "precio": 95000.0,
+        "stock": 5,
+        "descripcion": "Camiseta titular Boca Juniors 2000",
+        "imagenUrl": "https://placehold.co/400x400?text=Boca+Juniors+2000",
+        "creadorId": 1,
+        "creadorNombreUsuario": "admin",
+        "activo": true,
+        "fechaCreacion": "2026-10-01T10:00:00"
+      },
+      "cantidad": 1,
+      "precioUnitario": 95000.0,
+      "subtotal": 95000.0
+    },
+    {
+      "id": 2,
+      "casaca": {
+        "id": 4,
+        "equipo": {
+          "id": 4,
+          "nombre": "Real Madrid",
+          "liga": {
+            "id": 2,
+            "nombre": "LaLiga",
+            "pais": "España"
+          }
+        },
+        "liga": {
+          "id": 2,
+          "nombre": "LaLiga",
+          "pais": "España"
+        },
+        "anio": 2002,
+        "jugador": "Zidane",
+        "numero": 5,
+        "talle": "L",
+        "precio": 115000.0,
+        "stock": 4,
+        "descripcion": "Camiseta titular Real Madrid 2002",
+        "imagenUrl": "https://placehold.co/400x400?text=Real+Madrid+2002",
+        "creadorId": 1,
+        "creadorNombreUsuario": "admin",
+        "activo": true,
+        "fechaCreacion": "2026-10-01T10:00:00"
+      },
+      "cantidad": 2,
+      "precioUnitario": 115000.0,
+      "subtotal": 230000.0
+    }
+  ],
+  "total": 325000.0,
+  "fechaCreacion": "2026-10-10T18:00:00"
+}

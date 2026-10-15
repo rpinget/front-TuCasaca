@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "nombre": "Boca Juniors",
+    "liga": {
+      "id": 1,
+      "nombre": "Liga Profesional",
+      "pais": "Argentina"
+    }
+  },
+  {
+    "id": 2,
+    "nombre": "River Plate",
+    "liga": {
+      "id": 1,
+      "nombre": "Liga Profesional",
+      "pais": "Argentina"
+    }
+  },
+  {
+    "id": 3,
+    "nombre": "San Lorenzo",
+    "liga": {
+      "id": 1,
+      "nombre": "Liga Profesional",
+      "pais": "Argentina"
+    }
+  },
+  {
+    "id": 4,
+    "nombre": "Real Madrid",
+    "liga": {
+      "id": 2,
+      "nombre": "LaLiga",
+      "pais": "España"
+    }
+  },
+  {
+    "id": 5,
+    "nombre": "FC Barcelona",
+    "liga": {
+      "id": 2,
+      "nombre": "LaLiga",
+      "pais": "España"
+    }
+  },
+  {
+    "id": 6,
+    "nombre": "Liverpool",
+    "liga": {
+      "id": 3,
+      "nombre": "Premier League",
+      "pais": "Inglaterra"
+    }
+  }
+]

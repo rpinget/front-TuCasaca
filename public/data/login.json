@@ -1,0 +1,7 @@
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9.mock.token",
+  "id": 2,
+  "email": "ana.gomez@tucasaca.com",
+  "nombre": "Ana",
+  "rol": "USUARIO"
+}

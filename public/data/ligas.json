@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nombre": "Liga Profesional",
+    "pais": "Argentina"
+  },
+  {
+    "id": 2,
+    "nombre": "LaLiga",
+    "pais": "España"
+  },
+  {
+    "id": 3,
+    "nombre": "Premier League",
+    "pais": "Inglaterra"
+  }
+]
