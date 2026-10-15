@@ -1,0 +1,5 @@
+[
+  { "id": 1, "email": "admin@tucasaca.com", "password": "admin123", "nombre": "Admin", "rol": "ADMIN" },
+  { "id": 2, "email": "ana.gomez@tucasaca.com", "password": "usuario123", "nombre": "Ana", "rol": "USUARIO" },
+  { "id": 3, "email": "juan.perez@tucasaca.com", "password": "usuario123", "nombre": "Juan", "rol": "USUARIO" }
+]
