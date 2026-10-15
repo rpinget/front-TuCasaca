@@ -1,0 +1,46 @@
+.admin__cabecera { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.admin__cabecera h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); }
+.admin__sub { margin: 0.3rem 0 0; color: var(--suave); }
+.admin__nuevo { padding: 0.8rem 1.5rem; border: 0; border-radius: 999px; background: var(--tinta); color: #fff; font: inherit; font-weight: 700; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.admin__nuevo:hover { background: var(--acento); color: var(--tinta); }
+
+.admin__tabla { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); overflow: hidden; }
+.admin__tabla th { text-align: left; font-size: 0.78rem; font-weight: 500; color: var(--suave); padding: 0.9rem 1rem; border-bottom: 1px solid var(--linea); }
+.admin__tabla td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--linea); vertical-align: middle; }
+.admin__tabla tr:last-child td { border-bottom: 0; }
+.admin__tabla td strong { display: block; }
+.admin__tabla td span:not(.admin__estado) { color: var(--suave); font-size: 0.85rem; }
+
+.admin__estado { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; background: #eaffb8; color: #2c5a0b; font-size: 0.78rem; font-weight: 700; }
+.admin__estado--off { background: #eceae4; color: var(--suave); }
+
+.admin__acciones { text-align: right; white-space: nowrap; }
+.admin__acciones button { margin-left: 0.4rem; padding: 0.4rem 0.9rem; border: 1px solid var(--linea); border-radius: 999px; background: var(--superficie); font: inherit; font-size: 0.85rem; cursor: pointer; }
+.admin__acciones button:hover { border-color: var(--tinta); }
+.admin__borrar:hover { color: #d6402b; border-color: #d6402b !important; }
+.admin__acciones .admin__peligro { background: #d6402b; border-color: #d6402b; color: #fff; }
+
+.admin__fondo { position: fixed; inset: 0; z-index: 50; background: rgba(14, 15, 18, 0.55); backdrop-filter: blur(4px); display: grid; place-items: center; padding: 1rem; overflow-y: auto; }
+.admin__form { width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto; background: var(--superficie); border-radius: 24px; padding: 1.8rem; display: grid; gap: 1.1rem; }
+.admin__form h2 { font-size: 1.7rem; }
+.admin__doble { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+.admin__check { display: flex; align-items: center; gap: 0.6rem; font-size: 0.95rem; }
+.admin__check input { width: 18px; height: 18px; accent-color: var(--tinta); }
+.admin__botones { display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap; }
+.admin__botones .auth__btn { padding: 0.8rem 1.6rem; }
+.admin__cancelar { padding: 0.8rem 1.4rem; border: 1px solid var(--linea); border-radius: 999px; background: var(--superficie); font: inherit; font-weight: 500; cursor: pointer; }
+.admin__cancelar:hover { border-color: var(--tinta); }
+
+/* en pantallas chicas cada fila de la tabla pasa a ser una tarjeta */
+@media (max-width: 760px) {
+  .admin__tabla, .admin__tabla tbody, .admin__tabla tr, .admin__tabla td { display: block; width: 100%; }
+  .admin__tabla { background: transparent; border: 0; }
+  .admin__tabla thead { display: none; }
+  .admin__tabla tr { background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); margin-bottom: 0.9rem; padding: 0.4rem 0; }
+  .admin__tabla td { display: flex; justify-content: space-between; align-items: center; gap: 1rem; border: 0; padding: 0.4rem 1rem; text-align: right; }
+  .admin__tabla td::before { content: attr(data-label); color: var(--suave); font-size: 0.8rem; text-align: left; }
+  .admin__tabla td strong { display: inline; }
+  .admin__tabla .admin__acciones { justify-content: flex-end; }
+  .admin__tabla .admin__acciones::before { content: none; }
+  .admin__form { padding: 1.3rem 1.1rem; }
+}
