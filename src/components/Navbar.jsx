@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
+import { getLigas } from '../services/api'
 import './Navbar.css'
 
 const Navbar = () => {
@@ -15,12 +16,13 @@ const Navbar = () => {
   const [menuUsuario, setMenuUsuario] = useState(false)
   const [menuMovil, setMenuMovil] = useState(false)
 
-  // las ligas son las "categorías" de la barra inferior
+  // useEffect con [] -> corre una sola vez al montar. Las ligas son las
+  // "categorías" de la barra inferior (GET /api/ligas).
   useEffect(() => {
     const cargarLigas = async () => {
       try {
-        const res = await fetch('/data/ligas.json')
-        if (res.ok) setLigas(await res.json())
+        const data = await getLigas()
+        setLigas(data)
       } catch {
         setLigas([])
       }

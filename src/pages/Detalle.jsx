@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
 import CamisetaImg from '../components/CamisetaImg'
+import { getCasaca } from '../services/api'
 import './Detalle.css'
 
 const Detalle = () => {
@@ -19,17 +20,15 @@ const Detalle = () => {
   const { agregar } = useCarrito()
   const navigate = useNavigate()
 
-  // se vuelve a ejecutar cada vez que cambia el id de la URL
+  // useEffect con [id] -> se vuelve a ejecutar cada vez que cambia el id de la
+  // URL. Pide la casaca directo al back (GET /api/casacas/{id}); si no existe,
+  // el back responde 404 y getCasaca lanza el error que mostramos abajo.
   useEffect(() => {
     const cargarCasaca = async () => {
       try {
         setLoading(true)
-        const res = await fetch('/data/casacas.json')
-        if (!res.ok) throw new Error('Error al cargar la casaca')
-        const lista = await res.json()
-        const encontrada = lista.find((c) => c.id === Number(id))
-        if (!encontrada) throw new Error('No se encontró la casaca')
-        setCasaca(encontrada)
+        const data = await getCasaca(id)
+        setCasaca(data)
         setError(null)
       } catch (err) {
         setError(err.message)

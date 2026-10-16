@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import CasacaCard from '../components/CasacaCard'
 import CamisetaImg from '../components/CamisetaImg'
+import { getCasacas, getCasacasPorLiga, getLigas } from '../services/api'
 import './Home.css'
 
 const Home = () => {
@@ -15,36 +16,45 @@ const Home = () => {
   const ligaId = params.get('liga')
   const q = (params.get('q') ?? '').trim().toLowerCase()
 
-  // useEffect con [] -> se ejecuta una sola vez al montar el componente
+  // useEffect con [] -> corre una sola vez al montar: trae las ligas (categorias)
   useEffect(() => {
-    const cargarDatos = async () => {
+    const cargarLigas = async () => {
       try {
-        const [resCasacas, resLigas] = await Promise.all([
-          fetch('/data/casacas.json'),
-          fetch('/data/ligas.json'),
-        ])
-        if (!resCasacas.ok || !resLigas.ok) {
-          throw new Error('Error al cargar los datos')
-        }
-        setCasacas(await resCasacas.json())
-        setLigas(await resLigas.json())
+        const data = await getLigas()
+        setLigas(data)
+      } catch (err) {
+        setError(err.message)
+      }
+    }
+    cargarLigas()
+  }, [])
+
+  // useEffect con [ligaId] -> vuelve a pedir casacas al back CADA VEZ que cambia
+  // el filtro de liga. Sin liga: todo el catalogo (GET /api/casacas).
+  // Con liga: solo esa liga (GET /api/casacas/liga/{ligaId}).
+  useEffect(() => {
+    const cargarCasacas = async () => {
+      try {
+        setLoading(true)
+        const data = ligaId ? await getCasacasPorLiga(ligaId) : await getCasacas()
+        setCasacas(data)
+        setError(null)
       } catch (err) {
         setError(err.message)
       } finally {
         setLoading(false)
       }
     }
-    cargarDatos()
-  }, [])
+    cargarCasacas()
+  }, [ligaId])
 
   if (loading) return <p>Cargando casacas...</p>
   if (error) return <p>Error: {error}</p>
 
-  const visibles = casacas
-    .filter((c) => !ligaId || c.liga.id === Number(ligaId))
-    .filter((c) =>
-      !q || `${c.equipo.nombre} ${c.jugador} ${c.anio}`.toLowerCase().includes(q)
-    )
+  // la liga ya la filtro el back (useEffect [ligaId]); aca solo filtro por texto
+  const visibles = casacas.filter((c) =>
+    !q || `${c.equipo.nombre} ${c.jugador} ${c.anio}`.toLowerCase().includes(q)
+  )
 
   const ligaActiva = ligas.find((l) => l.id === Number(ligaId))
   const hayFiltro = Boolean(ligaId || q)
