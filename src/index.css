@@ -5,14 +5,45 @@
   --suave: #6b6e77;
   --linea: #e4e4de;
   --acento: #c8ff2e;
+  --oscuro: #0e0f12;          /* siempre oscuro (portada, footer, aviso) */
+  --sobre-tinta: #ffffff;     /* texto sobre fondos var(--tinta) */
+  --navbar-bg: rgba(246, 246, 243, 0.82);
+  --relleno: #ececE7;
+  --hover: rgba(14, 15, 18, 0.07);
+  --cta-hover: #2a2c33;
+  --ok-bg: #eaffb8;
+  --ok-txt: #2c5a0b;
+  --error-bg: #ffe9e5;
+  --error-txt: #a92b19;
+  color-scheme: light;
   --radio: 20px;
   --display: 'Bricolage Grotesque', system-ui, sans-serif;
   --texto: 'DM Sans', system-ui, sans-serif;
 }
 
+/* modo oscuro: se activa con data-tema="oscuro" en <html> (ver context/TemaContext.jsx) */
+:root[data-tema='oscuro'] {
+  --bg: #0f1013;
+  --superficie: #1a1b20;
+  --tinta: #f2f2ee;
+  --suave: #9a9ca5;
+  --linea: #2c2e35;
+  --sobre-tinta: #0e0f12;
+  --navbar-bg: rgba(15, 16, 19, 0.82);
+  --relleno: #23252b;
+  --hover: rgba(255, 255, 255, 0.09);
+  --cta-hover: #ffffff;
+  --ok-bg: #1f3a12;
+  --ok-txt: #c8ff2e;
+  --error-bg: #3a1a15;
+  --error-txt: #ff9d8c;
+  color-scheme: dark;
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; font-family: var(--texto); color: var(--tinta); background: var(--bg); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+input, select, textarea, button { color: inherit; }
 img { max-width: 100%; display: block; }
 h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin: 0; }
 a { color: inherit; }
