@@ -10,6 +10,8 @@ const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
 // (la consigna del TPO 03). Si no esta seteada, se intenta el back primero.
 const FORZAR_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
+const TIMEOUT_MS = 2000
+
 // Lee un JSON estatico de /public/data (misma forma que los DTOs del back).
 async function leerMock(archivo) {
   const res = await fetch(`/data/${archivo}`)
@@ -28,7 +30,8 @@ async function pedir(path, mock) {
   if (FORZAR_MOCK) return mock()
   let res
   try {
-    res = await fetch(`${BASE}${path}`)
+    // si el back no contesta en TIMEOUT_MS se corta y se usa el mock
+    res = await fetch(`${BASE}${path}`, { signal: AbortSignal.timeout(TIMEOUT_MS) })
   } catch {
     return mock()
   }
