@@ -17,3 +17,5 @@
 .detalle__ok a { font-weight: 700; }
 
 @media (max-width: 800px) { .detalle__contenido { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+.detalle__error { margin-top: 1rem; padding: 0.8rem 1.1rem; background: var(--error-bg); color: var(--error-txt); border-radius: 14px; font-weight: 500; }

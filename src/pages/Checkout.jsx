@@ -9,8 +9,10 @@ const formatear = (n) => `$${n.toLocaleString('es-AR')}`
 
 const Checkout = () => {
   const { usuario } = useAuth()
-  const { items, total, vaciar } = useCarrito()
+  const { items, total, finalizarCompra } = useCarrito()
   const [confirmada, setConfirmada] = useState(null)
+  const [enviando, setEnviando] = useState(false)
+  const [error, setError] = useState(null)
 
   if (!usuario) {
     return (
@@ -43,10 +45,17 @@ const Checkout = () => {
     )
   }
 
-  const confirmar = () => {
-    // MOCK: acá iría POST /api/carritos/{usuarioId}/checkout (descuenta stock y cierra el carrito)
-    setConfirmada({ total, cantidad: items.length })
-    vaciar()
+  const confirmar = async () => {
+    // con sesión real: POST /api/carritos/{usuarioId}/checkout (descuenta stock y cierra el carrito)
+    try {
+      setEnviando(true)
+      setError(null)
+      setConfirmada(await finalizarCompra())
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setEnviando(false)
+    }
   }
 
   return (
@@ -69,7 +78,10 @@ const Checkout = () => {
         <aside className="carrito__resumen">
           <h2>Total a pagar</h2>
           <p className="carrito__total"><span>Total</span><span>{formatear(total)}</span></p>
-          <button className="carrito__btn" onClick={confirmar}>Confirmar compra</button>
+          {error && <p className="carrito__error" role="alert">{error}</p>}
+          <button className="carrito__btn" onClick={confirmar} disabled={enviando}>
+            {enviando ? 'Procesando...' : 'Confirmar compra'}
+          </button>
           <Link to="/carrito" className="carrito__vaciar">Volver al carrito</Link>
         </aside>
       </div>
