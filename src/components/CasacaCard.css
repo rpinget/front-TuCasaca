@@ -1,10 +1,11 @@
+.casaca-card { position: relative; }
 .casaca-card__link { display: block; color: inherit; text-decoration: none; }
 .casaca-card__media { position: relative; border-radius: var(--radio); overflow: hidden; }
 .casaca-card__media .camiseta { transition: background 0.3s; }
 .casaca-card:hover .camiseta__svg, .casaca-card:hover .camiseta__foto { transform: scale(1.07); }
 .casaca-card__anio { position: absolute; top: 12px; left: 12px; background: var(--superficie); font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 999px; }
-.casaca-card__estado { position: absolute; bottom: 12px; left: 12px; background: var(--acento); color: var(--tinta); font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 999px; }
-.casaca-card__estado--agotada { background: var(--tinta); color: #fff; }
+.casaca-card__estado { position: absolute; bottom: 12px; left: 12px; background: var(--acento); color: var(--oscuro); font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 999px; }
+.casaca-card__estado--agotada { background: var(--oscuro); color: #fff; }
 .casaca-card__info { padding: 0.8rem 0.15rem 0; }
 .casaca-card__fila { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
 .casaca-card h3 { font-size: 1.2rem; }

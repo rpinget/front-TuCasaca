@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import CamisetaImg from './CamisetaImg'
+import FavoritoBtn from './FavoritoBtn'
 import './CasacaCard.css'
 
 const CasacaCard = ({ casaca }) => {
@@ -24,6 +25,7 @@ const CasacaCard = ({ casaca }) => {
           <span className="casaca-card__liga">{casaca.liga.nombre}</span>
         </div>
       </Link>
+      <FavoritoBtn casacaId={casaca.id} className="favorito--tarjeta" />
     </article>
   )
 }
