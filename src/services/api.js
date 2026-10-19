@@ -19,19 +19,23 @@ async function leerMock(archivo) {
   return res.json()
 }
 
-// Pide un recurso GET publico y devuelve el JSON ya parseado.
+// Pide un recurso GET (publico, o con token si se pasa) y devuelve el JSON ya parseado.
 // Sin header Authorization: estos endpoints son publicos y meter un token
 // invalido haria que el JwtFilter del back responda 401/403.
 //
 // Si el back no esta levantado (fetch falla por red) se usa `mock()`, que lee
 // los JSON locales. Si el back responde con un error HTTP (404, 500...) NO se
 // hace fallback: ese error es real y se muestra.
-async function pedir(path, mock) {
-  if (FORZAR_MOCK) return mock()
+async function pedir(path, mock, token) {
+  // el login todavia es mock: ese token no sirve en el back, asi que se usan los JSON
+  if (FORZAR_MOCK || token === 'mock-token') return mock()
   let res
   try {
     // si el back no contesta en TIMEOUT_MS se corta y se usa el mock
-    res = await fetch(`${BASE}${path}`, { signal: AbortSignal.timeout(TIMEOUT_MS) })
+    res = await fetch(`${BASE}${path}`, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
   } catch {
     return mock()
   }
@@ -60,3 +64,14 @@ export const getCasacasPorLiga = (ligaId) =>
 
 export const getLigas = () => pedir('/api/ligas', () => leerMock('ligas.json'))
 export const getEquipos = () => pedir('/api/equipos', () => leerMock('equipos.json'))
+
+// GET /api/usuarios/me (requiere token). El mock devuelve usuario.json pero con
+// los datos de la sesion, para que cada usuario de prueba vea su propio perfil.
+export const getUsuarioMe = (sesion) =>
+  pedir('/api/usuarios/me', async () => ({
+    ...(await leerMock('usuario.json')),
+    id: sesion.id,
+    email: sesion.email,
+    nombre: sesion.nombre,
+    rol: sesion.rol,
+  }), sesion.token)

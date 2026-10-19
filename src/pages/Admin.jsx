@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { getLigas, getEquipos } from '../services/api'
 import './Auth.css'
 import './Carrito.css'
 import './Admin.css'
@@ -39,15 +40,17 @@ const Admin = () => {
     if (!esAdmin) return
     const cargar = async () => {
       try {
-        const [rc, rl, re] = await Promise.all([
+        // MOCK: el listado completo (con inactivas) vendría de GET /api/casacas con rol ADMIN;
+        // por ahora sale del JSON. Ligas y equipos usan la misma capa que el resto de la app.
+        const [rc, ligasData, equiposData] = await Promise.all([
           fetch('/data/casacas.json'),
-          fetch('/data/ligas.json'),
-          fetch('/data/equipos.json'),
+          getLigas(),
+          getEquipos(),
         ])
-        if (!rc.ok || !rl.ok || !re.ok) throw new Error('Error al cargar los datos')
+        if (!rc.ok) throw new Error('Error al cargar los datos')
         setCasacas(await rc.json())
-        setLigas(await rl.json())
-        setEquipos(await re.json())
+        setLigas(ligasData)
+        setEquipos(equiposData)
       } catch (err) {
         setError(err.message)
       } finally {

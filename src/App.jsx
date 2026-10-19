@@ -8,6 +8,8 @@ import Registro from './pages/Registro'
 import Carrito from './pages/Carrito'
 import Checkout from './pages/Checkout'
 import Admin from './pages/Admin'
+import Favoritos from './pages/Favoritos'
+import Perfil from './pages/Perfil'
 import NotFound from './pages/NotFound'
 import './App.css'
 
@@ -23,6 +25,8 @@ function App() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/favoritos" element={<Favoritos />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
