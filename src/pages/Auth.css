@@ -9,15 +9,15 @@
 .campo { display: flex; flex-direction: column; gap: 0.4rem; }
 .campo label { font-size: 0.82rem; font-weight: 500; color: var(--suave); }
 .campo input, .campo select { padding: 0.8rem 1rem; border: 1px solid var(--linea); border-radius: 14px; background: var(--bg); font: inherit; width: 100%; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
-.campo input:focus, .campo select:focus { outline: none; background: #fff; border-color: var(--tinta); box-shadow: 0 0 0 4px rgba(14, 15, 18, 0.06); }
+.campo input:focus, .campo select:focus { outline: none; background: var(--superficie); border-color: var(--tinta); box-shadow: 0 0 0 4px rgba(14, 15, 18, 0.06); }
 .campo--error input, .campo--error select { border-color: #d6402b; }
 .campo__error { color: #d6402b; font-size: 0.8rem; }
 
-.auth__btn { padding: 0.95rem; border: 0; border-radius: 999px; background: var(--tinta); color: #fff; font: inherit; font-weight: 700; cursor: pointer; transition: background 0.2s, color 0.2s, transform 0.2s; }
-.auth__btn:hover { background: var(--acento); color: var(--tinta); transform: translateY(-2px); }
+.auth__btn { padding: 0.95rem; border: 0; border-radius: 999px; background: var(--tinta); color: var(--sobre-tinta); font: inherit; font-weight: 700; cursor: pointer; transition: background 0.2s, color 0.2s, transform 0.2s; }
+.auth__btn:hover { background: var(--acento); color: var(--oscuro); transform: translateY(-2px); }
 .auth__btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-.auth__alerta { background: #ffe9e5; color: #a92b19; padding: 0.8rem 1rem; border-radius: 14px; font-size: 0.9rem; }
-.auth__ok { background: #eaffb8; padding: 0.9rem 1rem; border-radius: 14px; font-weight: 500; }
+.auth__alerta { background: var(--error-bg); color: var(--error-txt); padding: 0.8rem 1rem; border-radius: 14px; font-size: 0.9rem; }
+.auth__ok { background: var(--ok-bg); padding: 0.9rem 1rem; border-radius: 14px; font-weight: 500; }
 .auth__pie { margin-top: 1.5rem; text-align: center; color: var(--suave); }
 .auth__pie a { color: var(--tinta); font-weight: 700; }
 

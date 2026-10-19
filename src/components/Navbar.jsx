@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
+import { useFavoritos } from '../context/FavoritosContext'
+import { useTema } from '../context/TemaContext'
 import { getLigas } from '../services/api'
 import './Navbar.css'
 
 const Navbar = () => {
   const { usuario, esAdmin, logout } = useAuth()
   const { cantidadTotal } = useCarrito()
+  const { cantidad: cantidadFavoritos } = useFavoritos()
+  const { tema, alternar: alternarTema } = useTema()
   const navigate = useNavigate()
   const [params] = useSearchParams()
 
@@ -76,7 +80,9 @@ const Navbar = () => {
               </button>
               {menuUsuario && (
                 <div className="navbar__dropdown">
+                  <Link to="/perfil" onClick={cerrarMenus}>Mi perfil</Link>
                   <Link to="/carrito" onClick={cerrarMenus}>Mi carrito</Link>
+                  <Link to="/favoritos" onClick={cerrarMenus}>Mis favoritos</Link>
                   {esAdmin && <Link to="/admin" onClick={cerrarMenus}>Panel de administración</Link>}
                   <button onClick={salir}>Salir</button>
                 </div>
@@ -88,6 +94,18 @@ const Navbar = () => {
               <Link to="/login" onClick={cerrarMenus}>Ingresá</Link>
             </div>
           )}
+
+          <button className="navbar__icono" onClick={alternarTema} aria-label={tema === 'oscuro' ? 'Activar modo claro' : 'Activar modo oscuro'}
+            title={tema === 'oscuro' ? 'Modo claro' : 'Modo oscuro'}>
+            {tema === 'oscuro' ? '☀' : '☾'}
+          </button>
+
+          <Link to="/favoritos" className="navbar__carrito" aria-label="Favoritos" onClick={cerrarMenus}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z" />
+            </svg>
+            {cantidadFavoritos > 0 && <span className="navbar__badge">{cantidadFavoritos}</span>}
+          </Link>
 
           <Link to="/carrito" className="navbar__carrito" aria-label="Carrito" onClick={cerrarMenus}>
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

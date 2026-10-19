@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
 import CamisetaImg from '../components/CamisetaImg'
+import FavoritoBtn from '../components/FavoritoBtn'
 import { getCasaca } from '../services/api'
 import './Detalle.css'
 
@@ -92,6 +93,7 @@ const Detalle = () => {
               <button className="detalle__btn" onClick={agregarAlCarrito}>
                 {usuario ? 'Agregar al carrito' : 'Ingresá para comprar'}
               </button>
+              <FavoritoBtn casacaId={casaca.id} />
             </div>
           )}
 

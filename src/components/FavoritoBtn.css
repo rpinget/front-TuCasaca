@@ -1,0 +1,5 @@
+.favorito { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linea); background: var(--superficie); cursor: pointer; transition: transform 0.2s; }
+.favorito svg { fill: none; stroke: var(--tinta); transition: fill 0.2s, stroke 0.2s; }
+.favorito:hover { transform: scale(1.1); }
+.favorito--activo svg { fill: #e0245e; stroke: #e0245e; }
+.favorito--tarjeta { position: absolute; top: 12px; right: 12px; z-index: 2; width: 36px; height: 36px; border: 0; }

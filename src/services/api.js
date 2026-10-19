@@ -6,19 +6,72 @@
 // la variable de entorno VITE_API_URL (p. ej. para produccion).
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
 
-// Pide un recurso GET publico y devuelve el JSON ya parseado.
+// VITE_USE_MOCK=true fuerza a leer siempre los JSON locales de /public/data
+// (la consigna del TPO 03). Si no esta seteada, se intenta el back primero.
+const FORZAR_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+
+const TIMEOUT_MS = 2000
+
+// Lee un JSON estatico de /public/data (misma forma que los DTOs del back).
+async function leerMock(archivo) {
+  const res = await fetch(`/data/${archivo}`)
+  if (!res.ok) throw new Error(`No se pudo leer los datos locales (${archivo})`)
+  return res.json()
+}
+
+// Pide un recurso GET (publico, o con token si se pasa) y devuelve el JSON ya parseado.
 // Sin header Authorization: estos endpoints son publicos y meter un token
 // invalido haria que el JwtFilter del back responda 401/403.
-async function pedir(path) {
-  const res = await fetch(`${BASE}${path}`)
+//
+// Si el back no esta levantado (fetch falla por red) se usa `mock()`, que lee
+// los JSON locales. Si el back responde con un error HTTP (404, 500...) NO se
+// hace fallback: ese error es real y se muestra.
+async function pedir(path, mock, token) {
+  // el login todavia es mock: ese token no sirve en el back, asi que se usan los JSON
+  if (FORZAR_MOCK || token === 'mock-token') return mock()
+  let res
+  try {
+    // si el back no contesta en TIMEOUT_MS se corta y se usa el mock
+    res = await fetch(`${BASE}${path}`, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+  } catch {
+    return mock()
+  }
   if (!res.ok) {
     throw new Error(`Error ${res.status} al pedir ${path}`)
   }
   return res.json()
 }
 
-export const getCasacas = () => pedir('/api/casacas')
-export const getCasaca = (id) => pedir(`/api/casacas/${id}`)
-export const getCasacasPorLiga = (ligaId) => pedir(`/api/casacas/liga/${ligaId}`)
-export const getLigas = () => pedir('/api/ligas')
-export const getEquipos = () => pedir('/api/equipos')
+// el back solo devuelve casacas activas; el mock replica ese comportamiento
+const soloActivas = (casacas) => casacas.filter((c) => c.activo)
+
+export const getCasacas = () =>
+  pedir('/api/casacas', async () => soloActivas(await leerMock('casacas.json')))
+
+export const getCasaca = (id) =>
+  pedir(`/api/casacas/${id}`, async () => {
+    const casaca = soloActivas(await leerMock('casacas.json')).find((c) => c.id === Number(id))
+    if (!casaca) throw new Error(`Error 404 al pedir /api/casacas/${id}`)
+    return casaca
+  })
+
+export const getCasacasPorLiga = (ligaId) =>
+  pedir(`/api/casacas/liga/${ligaId}`, async () =>
+    soloActivas(await leerMock('casacas.json')).filter((c) => c.liga.id === Number(ligaId)))
+
+export const getLigas = () => pedir('/api/ligas', () => leerMock('ligas.json'))
+export const getEquipos = () => pedir('/api/equipos', () => leerMock('equipos.json'))
+
+// GET /api/usuarios/me (requiere token). El mock devuelve usuario.json pero con
+// los datos de la sesion, para que cada usuario de prueba vea su propio perfil.
+export const getUsuarioMe = (sesion) =>
+  pedir('/api/usuarios/me', async () => ({
+    ...(await leerMock('usuario.json')),
+    id: sesion.id,
+    email: sesion.email,
+    nombre: sesion.nombre,
+    rol: sesion.rol,
+  }), sesion.token)
