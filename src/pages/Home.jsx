@@ -10,6 +10,7 @@ const Home = () => {
   const [ligas, setLigas] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [orden, setOrden] = useState('') // '', 'precio-asc', 'precio-desc', 'anio-asc', 'anio-desc'
 
   // el filtro vive en la URL: /?liga=1  y  /?q=boca (los setea el Navbar)
   const [params] = useSearchParams()
@@ -56,6 +57,12 @@ const Home = () => {
     !q || `${c.equipo.nombre} ${c.jugador} ${c.anio}`.toLowerCase().includes(q)
   )
 
+  // orden elegido en el selector (el back no ordena, se hace en el front)
+  const [campo, sentido] = orden.split('-')
+  if (campo) {
+    visibles.sort((a, b) => (sentido === 'asc' ? a[campo] - b[campo] : b[campo] - a[campo]))
+  }
+
   const ligaActiva = ligas.find((l) => l.id === Number(ligaId))
   const hayFiltro = Boolean(ligaId || q)
 
@@ -88,6 +95,19 @@ const Home = () => {
         <p className="home__filtro">
           {visibles.length} resultado(s){q && <> para "{q}"</>} · <Link to="/">Limpiar filtros</Link>
         </p>
+      )}
+
+      {visibles.length > 1 && (
+        <div className="home__orden">
+          <label htmlFor="orden">Ordenar por</label>
+          <select id="orden" value={orden} onChange={(e) => setOrden(e.target.value)}>
+            <option value="">Destacadas</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="anio-desc">Año: más nuevas primero</option>
+            <option value="anio-asc">Año: más viejas primero</option>
+          </select>
+        </div>
       )}
 
       {visibles.length === 0 ? (

@@ -23,3 +23,6 @@
   .hero { grid-template-columns: 1fr; border-radius: 22px; min-height: 0; }
   .hero__visual { display: none; }
 }
+
+.home__orden { display: flex; align-items: center; gap: 0.6rem; justify-content: flex-end; margin-top: 1rem; color: var(--suave); font-size: 0.9rem; }
+.home__orden select { padding: 0.45rem 0.8rem; border-radius: 999px; border: 1px solid #d9d9de; background: #fff; font: inherit; color: var(--tinta); }
