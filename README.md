@@ -94,13 +94,13 @@ cambiar solamente la URL.
 
 ### Qué es simulado
 
-- **Login:** se valida contra `usuarios-demo.json`. En el back real lo hace `POST /api/auth/login`.
-- **Registro, alta/edición/baja de casacas y checkout:** las pantallas validan y actualizan
-  el estado en memoria. Los lugares donde iría la llamada al back están marcados con
-  un comentario `MOCK`.
-- **Carrito:** se guarda en el navegador (`localStorage`), un carrito por usuario.
-- **Admin:** los cambios se ven en la pantalla de administración y se pierden al recargar,
-  porque los JSON de `public/data` son de solo lectura.
+Con el back levantado **no se simula nada**. Estos son los fallbacks cuando el back no responde:
+
+- **Login:** se valida contra `usuarios-demo.json`. La sesión queda como "simulada" (`token: mock-token`).
+- **Registro:** valida los campos y simula el alta.
+- **Carrito:** en una sesión simulada se guarda en `localStorage`, un carrito por usuario.
+- **Checkout y ABM de casacas (Admin):** en una sesión simulada solo actualizan la pantalla;
+  los cambios se pierden al recargar porque los JSON de `public/data` son de solo lectura.
 
 ### Usuarios de prueba
 
@@ -112,15 +112,23 @@ cambiar solamente la URL.
 
 ## Conexión con el back
 
-Home, Detalle y Navbar piden los datos con `fetch` + `useEffect` a través de
-`src/services/api.js`, que apunta a `http://localhost:8080` (o `VITE_API_URL`).
+Toda la comunicación está en `src/services/api.js` (URL `http://localhost:8080`, o `VITE_API_URL`).
+Las pantallas usan `fetch` + `useEffect` / handlers `async` y muestran el `message` de error del back.
 
-- **Back levantado:** se usan los endpoints reales (`/api/casacas`, `/api/ligas`, ...).
-- **Back apagado:** `api.js` lee automáticamente los JSON de `public/data`, que tienen la
-  misma forma que los DTOs. Así el front funciona solo (consigna del TPO 03).
+| Pantalla | Endpoints |
+|---|---|
+| Inicio, Navbar | `GET /api/casacas`, `GET /api/casacas/liga/{id}`, `GET /api/ligas` |
+| Detalle | `GET /api/casacas/{id}` |
+| Login | `POST /api/auth/login` |
+| Registro | `POST /api/usuarios/registro` |
+| Perfil | `GET /api/usuarios/me` |
+| Carrito | `GET /api/carritos/{usuarioId}`, `POST .../items`, `DELETE .../items/{itemId}`, `DELETE .../vaciar` |
+| Checkout | `POST /api/carritos/{usuarioId}/checkout` |
+| Admin | `GET /api/equipos`, `POST /api/casacas`, `PUT /api/casacas/{id}`, `DELETE /api/casacas/{id}` |
+
+- **Back levantado:** se usan los endpoints reales. En el back, el origen `http://localhost:5173` ya está permitido por CORS.
+- **Back apagado:** el front sigue funcionando con los JSON de `public/data` (misma forma que los DTOs).
 - **Forzar datos locales:** crear un archivo `.env` con `VITE_USE_MOCK=true`.
-
-Pendiente de conectar: login, registro, checkout y el ABM del panel admin (siguen en modo `MOCK`).
 
 ## Extras
 
