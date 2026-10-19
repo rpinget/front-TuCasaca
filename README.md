@@ -106,5 +106,18 @@ cambiar solamente la URL.
 | ana.gomez@tucasaca.com | usuario123 | USUARIO |
 | juan.perez@tucasaca.com | usuario123 | USUARIO |
 
-## Conexión con el back ()
+## Conexión con el back
 
+Home, Detalle y Navbar piden los datos con `fetch` + `useEffect` a través de
+`src/services/api.js`, que apunta a `http://localhost:8080` (o `VITE_API_URL`).
+
+- **Back levantado:** se usan los endpoints reales (`/api/casacas`, `/api/ligas`, ...).
+- **Back apagado:** `api.js` lee automáticamente los JSON de `public/data`, que tienen la
+  misma forma que los DTOs. Así el front funciona solo (consigna del TPO 03).
+- **Forzar datos locales:** crear un archivo `.env` con `VITE_USE_MOCK=true`.
+
+Pendiente de conectar: login, registro, checkout y el ABM del panel admin (siguen en modo `MOCK`).
+
+## Extras
+
+- Ordenamiento del catálogo por precio o año (selector en el Inicio).
