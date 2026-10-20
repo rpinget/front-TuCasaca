@@ -5,6 +5,8 @@ import { getLigas, getEquipos } from '../services/api'
 import './Auth.css'
 import './Carrito.css'
 import './Admin.css'
+import './AdminUsuarios.css'
+import AdminUsuarios from './AdminUsuarios'
 
 const VACIO = {
   ligaId: '', equipoId: '', anio: '', jugador: '', numero: '', talle: '',
@@ -25,6 +27,7 @@ const validar = (f) => {
 const Admin = () => {
   const { usuario, esAdmin } = useAuth()
 
+  const [tab, setTab] = useState('casacas')       // 'casacas' | 'usuarios'
   const [casacas, setCasacas] = useState([])
   const [ligas, setLigas] = useState([])
   const [equipos, setEquipos] = useState([])
@@ -151,10 +154,19 @@ const Admin = () => {
       <div className="admin__cabecera">
         <div>
           <h1>Administración</h1>
-          <p className="admin__sub">{casacas.length} casacas cargadas</p>
+          <p className="admin__sub">{tab === 'casacas' ? `${casacas.length} casacas cargadas` : 'Gestión de usuarios'}</p>
         </div>
-        <button className="admin__nuevo" onClick={abrirAlta}>Nueva casaca</button>
+        {tab === 'casacas' && <button className="admin__nuevo" onClick={abrirAlta}>Nueva casaca</button>}
       </div>
+
+      <div className="admin__tabs">
+        <button className={tab === 'casacas' ? 'admin__tab admin__tab--activa' : 'admin__tab'} onClick={() => setTab('casacas')}>Casacas</button>
+        <button className={tab === 'usuarios' ? 'admin__tab admin__tab--activa' : 'admin__tab'} onClick={() => setTab('usuarios')}>Usuarios</button>
+      </div>
+
+      {tab === 'usuarios' && <AdminUsuarios sesion={usuario} />}
+
+      {tab === 'casacas' && (<>
 
       <table className="admin__tabla">
         <thead>
@@ -198,6 +210,7 @@ const Admin = () => {
       </table>
 
       {casacas.length === 0 && <p>No hay casacas cargadas.</p>}
+      </>)}
 
       {form && (
         <div className="admin__fondo" onClick={cerrar}>
