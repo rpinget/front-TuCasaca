@@ -31,3 +31,5 @@
   .carrito__cantidad, .carrito__subtotal, .carrito__quitar { grid-column: 2; justify-self: start; }
   .carrito__subtotal { text-align: left; }
 }
+
+.carrito__error { margin: 1rem 0 0; padding: 0.8rem 1.1rem; background: var(--error-bg); color: var(--error-txt); border-radius: 14px; font-weight: 500; }

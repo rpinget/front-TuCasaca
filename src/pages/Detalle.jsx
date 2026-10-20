@@ -16,6 +16,7 @@ const Detalle = () => {
   const [error, setError] = useState(null)
   const [cantidad, setCantidad] = useState(1)
   const [agregado, setAgregado] = useState(false)
+  const [errorCarrito, setErrorCarrito] = useState(null)
 
   const { usuario } = useAuth()
   const { agregar } = useCarrito()
@@ -52,14 +53,20 @@ const Detalle = () => {
 
   const sinStock = casaca.stock === 0
 
-  const agregarAlCarrito = () => {
+  const agregarAlCarrito = async () => {
     // para comprar hay que estar logueado (en el back el carrito exige token)
     if (!usuario) {
       navigate('/login')
       return
     }
-    agregar(casaca, cantidad)
-    setAgregado(true)
+    try {
+      setErrorCarrito(null)
+      await agregar(casaca, cantidad)
+      setAgregado(true)
+    } catch (err) {
+      setAgregado(false)
+      setErrorCarrito(err.message)
+    }
   }
 
   return (
@@ -96,6 +103,8 @@ const Detalle = () => {
               <FavoritoBtn casacaId={casaca.id} />
             </div>
           )}
+
+          {errorCarrito && <p className="detalle__error" role="alert">{errorCarrito}</p>}
 
           {agregado && (
             <p className="detalle__ok">

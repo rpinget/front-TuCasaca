@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { registrar } from '../services/api'
 import './Auth.css'
 
 const inicial = {
@@ -40,20 +41,34 @@ const Registro = () => {
   const [form, setForm] = useState(inicial)
   const [errores, setErrores] = useState({})
   const [creada, setCreada] = useState(false)
+  const [errorServidor, setErrorServidor] = useState(null)
+  const [enviando, setEnviando] = useState(false)
 
   if (usuario) return <Navigate to="/" replace />
 
   const cambiar = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  const enviar = (e) => {
+  const enviar = async (e) => {
     e.preventDefault()
     const encontrados = validar(form)
     setErrores(encontrados)
     if (Object.keys(encontrados).length > 0) return
 
-    // MOCK: acá iría POST /api/usuarios/registro con el UsuarioRegistroDTO (sin "confirmar")
-    setCreada(true)
-    setTimeout(() => navigate('/login'), 1500)
+    // POST /api/usuarios/registro con el UsuarioRegistroDTO (sin "confirmar").
+    // Si el back no está, el registro es simulado.
+    try {
+      setEnviando(true)
+      setErrorServidor(null)
+      // eslint-disable-next-line no-unused-vars
+      const { confirmar, ...datos } = form
+      await registrar({ ...datos, email: datos.email.trim().toLowerCase(), fechaNacimiento: datos.fechaNacimiento })
+      setCreada(true)
+      setTimeout(() => navigate('/login'), 1500)
+    } catch (err) {
+      setErrorServidor(err.message)
+    } finally {
+      setEnviando(false)
+    }
   }
 
   const props = { form, errores, cambiar }
@@ -70,6 +85,7 @@ const Registro = () => {
           </div>
         ) : (
           <form className="auth__form" onSubmit={enviar} noValidate>
+            {errorServidor && <div className="auth__alerta" role="alert">{errorServidor}</div>}
             <div className="auth__grid">
               <Campo id="nombre" label="Nombre" {...props} />
               <Campo id="apellido" label="Apellido" {...props} />
@@ -95,7 +111,9 @@ const Registro = () => {
               </Campo>
             </div>
 
-            <button className="auth__btn" type="submit">Crear cuenta</button>
+            <button className="auth__btn" type="submit" disabled={enviando}>
+              {enviando ? 'Creando...' : 'Crear cuenta'}
+            </button>
           </form>
         )}
 

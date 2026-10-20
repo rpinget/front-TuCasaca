@@ -30,7 +30,7 @@ const Favoritos = () => {
   if (loading) return <p>Cargando favoritos...</p>
   if (error) return <p>Error: {error}</p>
 
-  const favoritas = casacas.filter((c) => ids.includes(c.id))
+  const favoritas = casacas.filter((c) => c.activo !== false && ids.includes(c.id))
 
   if (favoritas.length === 0) {
     return (

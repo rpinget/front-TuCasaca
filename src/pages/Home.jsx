@@ -53,7 +53,7 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>
 
   // la liga ya la filtro el back (useEffect [ligaId]); aca solo filtro por texto
-  const visibles = casacas.filter((c) =>
+  const visibles = casacas.filter((c) => c.activo !== false).filter((c) =>
     !q || `${c.equipo.nombre} ${c.jugador} ${c.anio}`.toLowerCase().includes(q)
   )
 

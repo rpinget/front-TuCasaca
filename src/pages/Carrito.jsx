@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
@@ -8,7 +9,21 @@ const formatear = (n) => `$${n.toLocaleString('es-AR')}`
 
 const Carrito = () => {
   const { usuario } = useAuth()
-  const { items, total, cambiarCantidad, quitar, vaciar } = useCarrito()
+  const { items, total, cambiarCantidad: cambiar, quitar: quitarItem, vaciar: vaciarTodo } = useCarrito()
+  const [error, setError] = useState(null)
+
+  // cada acción puede fallar en el back (ej: stock insuficiente): se muestra el mensaje
+  const ejecutar = async (accion) => {
+    try {
+      setError(null)
+      await accion()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+  const cambiarCantidad = (id, cantidad) => ejecutar(() => cambiar(id, cantidad))
+  const quitar = (id) => ejecutar(() => quitarItem(id))
+  const vaciar = () => ejecutar(() => vaciarTodo())
 
   if (!usuario) {
     return (
@@ -33,6 +48,7 @@ const Carrito = () => {
   return (
     <section>
       <h1>Carrito</h1>
+      {error && <p className="carrito__error" role="alert">{error}</p>}
 
       <div className="carrito">
         <ul className="carrito__lista">

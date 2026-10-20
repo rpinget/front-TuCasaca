@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { getLigas, getEquipos } from '../services/api'
+import {
+  getCasacas, getLigas, getEquipos, crearCasaca, editarCasaca, eliminarCasaca, esSesionMock,
+} from '../services/api'
 import './Auth.css'
 import './Carrito.css'
 import './Admin.css'
@@ -38,20 +40,20 @@ const Admin = () => {
   const [editandoId, setEditandoId] = useState(null)
   const [errores, setErrores] = useState({})
   const [aBorrar, setABorrar] = useState(null)    // id pendiente de confirmar baja
+  const [errorServidor, setErrorServidor] = useState(null)
+  const [guardando, setGuardando] = useState(false)
 
   useEffect(() => {
     if (!esAdmin) return
     const cargar = async () => {
       try {
-        // MOCK: el listado completo (con inactivas) vendría de GET /api/casacas con rol ADMIN;
-        // por ahora sale del JSON. Ligas y equipos usan la misma capa que el resto de la app.
-        const [rc, ligasData, equiposData] = await Promise.all([
-          fetch('/data/casacas.json'),
+        // GET /api/casacas devuelve todas (activas e inactivas); ligas y equipos alimentan el formulario
+        const [casacasData, ligasData, equiposData] = await Promise.all([
+          getCasacas(),
           getLigas(),
           getEquipos(),
         ])
-        if (!rc.ok) throw new Error('Error al cargar los datos')
-        setCasacas(await rc.json())
+        setCasacas(casacasData)
         setLigas(ligasData)
         setEquipos(equiposData)
       } catch (err) {
@@ -95,7 +97,7 @@ const Admin = () => {
     setErrores({})
   }
 
-  const cerrar = () => { setForm(null); setEditandoId(null); setErrores({}) }
+  const cerrar = () => { setForm(null); setEditandoId(null); setErrores({}); setErrorServidor(null) }
 
   const cambiar = (e) => {
     const { name, value, type, checked } = e.target
@@ -104,7 +106,7 @@ const Admin = () => {
     setForm(nuevo)
   }
 
-  const guardar = (e) => {
+  const guardar = async (e) => {
     e.preventDefault()
     const encontrados = validar(form)
     setErrores(encontrados)
@@ -112,8 +114,8 @@ const Admin = () => {
 
     const equipo = equipos.find((x) => x.id === Number(form.equipoId))
     const datos = {
-      equipo,
-      liga: equipo.liga,
+      equipoId: equipo.id,
+      ligaId: equipo.liga.id,
       anio: form.anio === '' ? null : Number(form.anio),
       jugador: form.jugador.trim(),
       numero: form.numero === '' ? null : Number(form.numero),
@@ -125,26 +127,52 @@ const Admin = () => {
       activo: form.activo,
     }
 
-    // MOCK: acá irían POST /api/casacas (alta) y PUT /api/casacas/{id} (edición)
-    if (editandoId) {
-      setCasacas(casacas.map((c) => (c.id === editandoId ? { ...c, ...datos } : c)))
-    } else {
-      const nuevoId = Math.max(0, ...casacas.map((c) => c.id)) + 1
-      setCasacas([
-        ...casacas,
-        {
-          id: nuevoId, ...datos, creadorId: usuario.id,
-          creadorNombreUsuario: usuario.nombre, fechaCreacion: new Date().toISOString(),
-        },
-      ])
+    try {
+      setGuardando(true)
+      setErrorServidor(null)
+      if (esSesionMock(usuario)) {
+        // sesión simulada (se inició sin back): solo se actualiza la pantalla
+        const completa = { equipo, liga: equipo.liga, ...datos }
+        if (editandoId) {
+          setCasacas(casacas.map((c) => (c.id === editandoId ? { ...c, ...completa } : c)))
+        } else {
+          const nuevoId = Math.max(0, ...casacas.map((c) => c.id)) + 1
+          setCasacas([
+            ...casacas,
+            {
+              id: nuevoId, ...completa, creadorId: usuario.id,
+              creadorNombreUsuario: usuario.nombre, fechaCreacion: new Date().toISOString(),
+            },
+          ])
+        }
+      } else if (editandoId) {
+        // PUT /api/casacas/{id}
+        const actualizada = await editarCasaca(usuario, editandoId, datos)
+        setCasacas(casacas.map((c) => (c.id === editandoId ? actualizada : c)))
+      } else {
+        // POST /api/casacas
+        const creada = await crearCasaca(usuario, datos)
+        setCasacas([...casacas, creada])
+      }
+      cerrar()
+    } catch (err) {
+      setErrorServidor(err.message)
+    } finally {
+      setGuardando(false)
     }
-    cerrar()
   }
 
-  const borrar = (id) => {
-    // MOCK: acá iría DELETE /api/casacas/{id}
-    setCasacas(casacas.filter((c) => c.id !== id))
-    setABorrar(null)
+  const borrar = async (id) => {
+    try {
+      setErrorServidor(null)
+      // DELETE /api/casacas/{id} (sesión simulada: solo se saca de la pantalla)
+      if (!esSesionMock(usuario)) await eliminarCasaca(usuario, id)
+      setCasacas(casacas.filter((c) => c.id !== id))
+    } catch (err) {
+      setErrorServidor(err.message)
+    } finally {
+      setABorrar(null)
+    }
   }
 
   const equiposDeLiga = equipos.filter((x) => String(x.liga.id) === String(form?.ligaId))
@@ -167,6 +195,7 @@ const Admin = () => {
       {tab === 'usuarios' && <AdminUsuarios sesion={usuario} />}
 
       {tab === 'casacas' && (<>
+      {errorServidor && !form && <p className="carrito__error" role="alert">{errorServidor}</p>}
 
       <table className="admin__tabla">
         <thead>
@@ -216,6 +245,7 @@ const Admin = () => {
         <div className="admin__fondo" onClick={cerrar}>
           <form className="admin__form" onClick={(e) => e.stopPropagation()} onSubmit={guardar} noValidate>
             <h2>{editandoId ? 'Editar casaca' : 'Nueva casaca'}</h2>
+            {errorServidor && <div className="auth__alerta" role="alert">{errorServidor}</div>}
 
             <div className="auth__grid">
               <div className={errores.ligaId ? 'campo campo--error' : 'campo'}>
@@ -291,7 +321,9 @@ const Admin = () => {
 
             <div className="admin__botones">
               <button type="button" className="admin__cancelar" onClick={cerrar}>Cancelar</button>
-              <button type="submit" className="auth__btn">{editandoId ? 'Guardar cambios' : 'Crear casaca'}</button>
+              <button type="submit" className="auth__btn" disabled={guardando}>
+                {guardando ? 'Guardando...' : editandoId ? 'Guardar cambios' : 'Crear casaca'}
+              </button>
             </div>
           </form>
         </div>
