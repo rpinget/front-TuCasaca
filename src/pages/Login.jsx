@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { login as iniciarSesion } from '../services/api'
 import './Auth.css'
 
 const Login = () => {
@@ -27,27 +28,9 @@ const Login = () => {
 
     try {
       setEnviando(true)
-      // MOCK: en lugar de POST /api/auth/login se buscan las credenciales en un JSON estático
-      const res = await fetch('/data/usuarios-demo.json')
-      if (!res.ok) throw new Error('No se pudo iniciar sesión')
-      const usuarios = await res.json()
-
-      const encontrado = usuarios.find(
-        (u) => u.email === form.email.trim().toLowerCase() && u.password === form.password
-      )
-      if (!encontrado) {
-        setError('Email o contraseña incorrectos')
-        return
-      }
-
-      // se guarda con la misma forma que LoginResponseDTO del back
-      login({
-        token: 'mock-token',
-        id: encontrado.id,
-        email: encontrado.email,
-        nombre: encontrado.nombre,
-        rol: encontrado.rol,
-      })
+      // POST /api/auth/login; si el back no está, valida contra usuarios-demo.json
+      const sesion = await iniciarSesion(form.email, form.password)
+      login(sesion)
       navigate('/')
     } catch (err) {
       setError(err.message)

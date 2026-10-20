@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nombreUsuario": "admin", "nombre": "Admin", "apellido": "TuCasaca", "email": "admin@tucasaca.com", "fechaNacimiento": "1990-01-01", "sexo": "NO_ESPECIFICA", "rol": "ADMIN", "activo": true, "fechaCreacion": "2026-10-01T10:00:00" },
+  { "id": 2, "nombreUsuario": "ana.gomez", "nombre": "Ana", "apellido": "Gómez", "email": "ana.gomez@tucasaca.com", "fechaNacimiento": "1998-05-14", "sexo": "FEMENINO", "rol": "USUARIO", "activo": true, "fechaCreacion": "2026-10-01T10:00:00" },
+  { "id": 3, "nombreUsuario": "juan.perez", "nombre": "Juan", "apellido": "Pérez", "email": "juan.perez@tucasaca.com", "fechaNacimiento": "1995-09-30", "sexo": "MASCULINO", "rol": "USUARIO", "activo": true, "fechaCreacion": "2026-10-01T10:00:00" },
+  { "id": 4, "nombreUsuario": "sofia.lopez", "nombre": "Sofía", "apellido": "López", "email": "sofia.lopez@tucasaca.com", "fechaNacimiento": "2000-02-20", "sexo": "FEMENINO", "rol": "USUARIO", "activo": false, "fechaCreacion": "2026-10-01T10:00:00" }
+]
