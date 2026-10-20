@@ -51,7 +51,11 @@ Queda disponible en http://localhost:5173/
 | `/checkout` | Confirmar compra | Usuario logueado |
 | `/perfil` | Mis datos (`GET /api/usuarios/me`) | Usuario logueado |
 | `/favoritos` | Casacas marcadas con el corazón | Público |
-| `/admin` | Alta, edición y baja de casacas | Solo rol `ADMIN` |
+| `/admin` | Panel con dos pestañas: Casacas (alta, edición y baja) y Usuarios (`GET /api/usuarios` y baja con `DELETE /api/usuarios/admin/{id}`) | Solo rol `ADMIN` |
+
+## Mockup y mapa de navegación
+
+El mockup de todas las pantallas y el wireflow están en [`docs/TuCasaca_Mockup_Wireflow.pdf`](docs/TuCasaca_Mockup_Wireflow.pdf) (también en PNG y SVG editable). Incluye la versión celular y una tabla que asigna cada endpoint del back a su pantalla.
 
 ## Estructura de carpetas
 
