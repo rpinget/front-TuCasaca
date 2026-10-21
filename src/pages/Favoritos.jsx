@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import CasacaCard from '../components/CasacaCard'
+import EstadoVacio from '../components/EstadoVacio'
 import { useFavoritos } from '../context/FavoritosContext'
 import { getCasacas } from '../services/api'
 import './Home.css'
@@ -34,11 +34,12 @@ const Favoritos = () => {
 
   if (favoritas.length === 0) {
     return (
-      <section className="carrito__vacio">
-        <h1>Todavía no tenés favoritos</h1>
-        <p>Tocá el corazón de una casaca para guardarla acá.</p>
-        <Link to="/" className="carrito__btn">Ver casacas</Link>
-      </section>
+      <EstadoVacio
+        titulo="Todavía no tenés favoritos"
+        mensaje="Tocá el corazón de una casaca para guardarla acá."
+        linkTexto="Ver casacas"
+        linkTo="/"
+      />
     )
   }
 

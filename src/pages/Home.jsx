@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import CasacaCard from '../components/CasacaCard'
 import CamisetaImg from '../components/CamisetaImg'
+import EstadoVacio from '../components/EstadoVacio'
 import { getCasacas, getCasacasPorLiga, getLigas } from '../services/api'
 import './Home.css'
 
@@ -111,7 +112,12 @@ const Home = () => {
       )}
 
       {visibles.length === 0 ? (
-        <p>No encontramos casacas con ese criterio.</p>
+        <EstadoVacio
+          titulo="No encontramos casacas"
+          mensaje={hayFiltro ? 'No encontramos casacas que coincidan con tu criterio de búsqueda o filtro.' : 'No hay casacas disponibles en el catálogo.'}
+          linkTexto={hayFiltro ? 'Ver todo el catálogo' : undefined}
+          linkTo={hayFiltro ? '/' : undefined}
+        />
       ) : (
         <div className="home__grid">
           {visibles.map((casaca) => (
