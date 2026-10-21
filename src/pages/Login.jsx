@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login as iniciarSesion } from '../services/api'
+import Campo from '../components/Campo'
 import './Auth.css'
 
 const Login = () => {
@@ -48,17 +49,11 @@ const Login = () => {
         <form className="auth__form" onSubmit={enviar} noValidate>
           {error && <div className="auth__alerta" role="alert">{error}</div>}
 
-          <div className="campo">
-            <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" autoComplete="email"
-              value={form.email} onChange={cambiar} />
-          </div>
+          <Campo id="email" label="Email" type="email" autoComplete="email"
+            form={form} cambiar={cambiar} />
 
-          <div className="campo">
-            <label htmlFor="password">Contraseña</label>
-            <input id="password" name="password" type="password" autoComplete="current-password"
-              value={form.password} onChange={cambiar} />
-          </div>
+          <Campo id="password" label="Contraseña" type="password" autoComplete="current-password"
+            form={form} cambiar={cambiar} />
 
           <button className="auth__btn" type="submit" disabled={enviando}>
             {enviando ? 'Ingresando...' : 'Ingresar'}
