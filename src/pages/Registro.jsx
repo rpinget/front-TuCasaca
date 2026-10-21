@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { registrar } from '../services/api'
+import Campo from '../components/Campo'
 import './Auth.css'
 
 const inicial = {
@@ -23,16 +24,6 @@ const validar = (f) => {
   if (!f.sexo) e.sexo = 'Seleccioná una opción'
   return e
 }
-
-const Campo = ({ id, label, type = 'text', form, errores, cambiar, children }) => (
-  <div className={errores[id] ? 'campo campo--error' : 'campo'}>
-    <label htmlFor={id}>{label}</label>
-    {children ?? (
-      <input id={id} name={id} type={type} value={form[id]} onChange={cambiar} />
-    )}
-    {errores[id] && <span className="campo__error">{errores[id]}</span>}
-  </div>
-)
 
 const Registro = () => {
   const { usuario } = useAuth()

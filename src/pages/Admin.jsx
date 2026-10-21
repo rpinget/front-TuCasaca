@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import {
   getCasacas, getLigas, getEquipos, crearCasaca, editarCasaca, eliminarCasaca, esSesionMock,
 } from '../services/api'
+import Campo from '../components/Campo'
 import './Auth.css'
 import './Carrito.css'
 import './Admin.css'
@@ -177,6 +178,8 @@ const Admin = () => {
 
   const equiposDeLiga = equipos.filter((x) => String(x.liga.id) === String(form?.ligaId))
 
+  const props = { form, errores, cambiar }
+
   return (
     <section className="admin">
       <div className="admin__cabecera">
@@ -248,71 +251,40 @@ const Admin = () => {
             {errorServidor && <div className="auth__alerta" role="alert">{errorServidor}</div>}
 
             <div className="auth__grid">
-              <div className={errores.ligaId ? 'campo campo--error' : 'campo'}>
-                <label htmlFor="ligaId">Liga</label>
+              <Campo id="ligaId" label="Liga" {...props}>
                 <select id="ligaId" name="ligaId" value={form.ligaId} onChange={cambiar}>
                   <option value="">Seleccioná</option>
                   {ligas.map((l) => <option key={l.id} value={l.id}>{l.nombre}</option>)}
                 </select>
-                {errores.ligaId && <span className="campo__error">{errores.ligaId}</span>}
-              </div>
+              </Campo>
 
-              <div className={errores.equipoId ? 'campo campo--error' : 'campo'}>
-                <label htmlFor="equipoId">Equipo</label>
+              <Campo id="equipoId" label="Equipo" {...props}>
                 <select id="equipoId" name="equipoId" value={form.equipoId} onChange={cambiar} disabled={!form.ligaId}>
                   <option value="">{form.ligaId ? 'Seleccioná' : 'Elegí primero la liga'}</option>
                   {equiposDeLiga.map((x) => <option key={x.id} value={x.id}>{x.nombre}</option>)}
                 </select>
-                {errores.equipoId && <span className="campo__error">{errores.equipoId}</span>}
+              </Campo>
+            </div>
+
+            <div className="auth__grid">
+              <Campo id="jugador" label="Jugador" {...props} />
+              <div className="admin__doble">
+                <Campo id="numero" label="Número" type="number" min="0" {...props} />
+                <Campo id="anio" label="Año" type="number" min="1900" {...props} />
               </div>
             </div>
 
             <div className="auth__grid">
-              <div className="campo">
-                <label htmlFor="jugador">Jugador</label>
-                <input id="jugador" name="jugador" value={form.jugador} onChange={cambiar} />
-              </div>
+              <Campo id="talle" label="Talle" placeholder="S, M, L..." {...props} />
               <div className="admin__doble">
-                <div className="campo">
-                  <label htmlFor="numero">Número</label>
-                  <input id="numero" name="numero" type="number" min="0" value={form.numero} onChange={cambiar} />
-                </div>
-                <div className="campo">
-                  <label htmlFor="anio">Año</label>
-                  <input id="anio" name="anio" type="number" min="1900" value={form.anio} onChange={cambiar} />
-                </div>
+                <Campo id="precio" label="Precio" type="number" min="0" step="0.01" {...props} />
+                <Campo id="stock" label="Stock" type="number" min="0" {...props} />
               </div>
             </div>
 
-            <div className="auth__grid">
-              <div className={errores.talle ? 'campo campo--error' : 'campo'}>
-                <label htmlFor="talle">Talle</label>
-                <input id="talle" name="talle" placeholder="S, M, L..." value={form.talle} onChange={cambiar} />
-                {errores.talle && <span className="campo__error">{errores.talle}</span>}
-              </div>
-              <div className="admin__doble">
-                <div className={errores.precio ? 'campo campo--error' : 'campo'}>
-                  <label htmlFor="precio">Precio</label>
-                  <input id="precio" name="precio" type="number" min="0" step="0.01" value={form.precio} onChange={cambiar} />
-                  {errores.precio && <span className="campo__error">{errores.precio}</span>}
-                </div>
-                <div className={errores.stock ? 'campo campo--error' : 'campo'}>
-                  <label htmlFor="stock">Stock</label>
-                  <input id="stock" name="stock" type="number" min="0" value={form.stock} onChange={cambiar} />
-                  {errores.stock && <span className="campo__error">{errores.stock}</span>}
-                </div>
-              </div>
-            </div>
+            <Campo id="descripcion" label="Descripción" {...props} />
 
-            <div className="campo">
-              <label htmlFor="descripcion">Descripción</label>
-              <input id="descripcion" name="descripcion" value={form.descripcion} onChange={cambiar} />
-            </div>
-
-            <div className="campo">
-              <label htmlFor="imagenUrl">URL de la imagen (opcional)</label>
-              <input id="imagenUrl" name="imagenUrl" value={form.imagenUrl} onChange={cambiar} />
-            </div>
+            <Campo id="imagenUrl" label="URL de la imagen (opcional)" {...props} />
 
             <label className="admin__check">
               <input type="checkbox" name="activo" checked={form.activo} onChange={cambiar} />
