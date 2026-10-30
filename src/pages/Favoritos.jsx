@@ -1,36 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import CasacaCard from '../components/CasacaCard'
 import EstadoVacio from '../components/EstadoVacio'
-import { useFavoritos } from '../context/FavoritosContext'
-import { getCasacas } from '../services/api'
 import './Home.css'
 import './Carrito.css'
 
 const Favoritos = () => {
-  const { ids } = useFavoritos()
-  const [casacas, setCasacas] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  // useEffect con [] -> trae el catálogo una vez; después se filtran las favoritas
-  // (GET /api/casacas). Los ids de favoritos viven en el navegador.
-  useEffect(() => {
-    const cargar = async () => {
-      try {
-        setCasacas(await getCasacas())
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-    cargar()
-  }, [])
-
-  if (loading) return <p>Cargando favoritos...</p>
-  if (error) return <p>Error: {error}</p>
-
-  const favoritas = casacas.filter((c) => c.activo !== false && ids.includes(c.id))
+  // los favoritos ya tienen la casaca completa en el store: no hace falta
+  // volver a pedir el catálogo al back (GET /api/casacas)
+  const items = useSelector((state) => state.favorite.items)
+  const favoritas = items.filter((c) => c.activo !== false)
 
   if (favoritas.length === 0) {
     return (
