@@ -100,7 +100,7 @@ const Detalle = () => {
               <button className="detalle__btn" onClick={agregarAlCarrito}>
                 {usuario ? 'Agregar al carrito' : 'Ingresá para comprar'}
               </button>
-              <FavoritoBtn casacaId={casaca.id} />
+              <FavoritoBtn casaca={casaca} />
             </div>
           )}
 

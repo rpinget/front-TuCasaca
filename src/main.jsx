@@ -1,25 +1,26 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { CarritoProvider } from './context/CarritoContext.jsx'
-import { FavoritosProvider } from './context/FavoritosContext.jsx'
 import { TemaProvider } from './context/TemaContext.jsx'
+import { store } from './store/store.js'
 import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <TemaProvider>
-        <AuthProvider>
-          <CarritoProvider>
-            <FavoritosProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <TemaProvider>
+          <AuthProvider>
+            <CarritoProvider>
               <App />
-            </FavoritosProvider>
-          </CarritoProvider>
-        </AuthProvider>
-      </TemaProvider>
-    </BrowserRouter>
+            </CarritoProvider>
+          </AuthProvider>
+        </TemaProvider>
+      </BrowserRouter>
+    </Provider>
   </StrictMode>,
 )

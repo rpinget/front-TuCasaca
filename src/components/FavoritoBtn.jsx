@@ -1,16 +1,18 @@
-import { useFavoritos } from '../context/FavoritosContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleFavorite } from '../store/slices/favoriteSlice'
 import './FavoritoBtn.css'
 
 // corazón para marcar / desmarcar una casaca como favorita
-const FavoritoBtn = ({ casacaId, className = '' }) => {
-  const { esFavorita, alternar } = useFavoritos()
-  const activa = esFavorita(casacaId)
+const FavoritoBtn = ({ casaca, className = '' }) => {
+  const dispatch = useDispatch()
+  // se suscribe solo a este pedacito del store: se re-renderiza si cambia la lista
+  const activa = useSelector((state) => state.favorite.items.some((c) => c.id === casaca.id))
 
   return (
     <button
       type="button"
       className={`favorito ${activa ? 'favorito--activo' : ''} ${className}`}
-      onClick={() => alternar(casacaId)}
+      onClick={() => dispatch(toggleFavorite(casaca))}
       aria-pressed={activa}
       aria-label={activa ? 'Quitar de favoritos' : 'Agregar a favoritos'}
     >
