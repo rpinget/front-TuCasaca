@@ -69,13 +69,16 @@ export const CarritoProvider = ({ children }) => {
       return
     }
     const existente = items.find((i) => i.casaca.id === casaca.id)
+    const nueva = (existente?.cantidad ?? 0) + cantidad
+    if (nueva > casaca.stock) {
+      throw new Error(`Stock insuficiente para la cantidad total. Disponible: ${casaca.stock}`)
+    }
     if (existente) {
-      const nueva = Math.min(existente.cantidad + cantidad, casaca.stock)
       guardarLocal(items.map((i) => (i.id === existente.id ? { ...i, cantidad: nueva } : i)))
     } else {
       guardarLocal([
         ...items,
-        { id: Date.now(), casaca, cantidad: Math.min(cantidad, casaca.stock), precioUnitario: casaca.precio },
+        { id: Date.now(), casaca, cantidad, precioUnitario: casaca.precio },
       ])
     }
   }
