@@ -1,17 +1,21 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from './AuthContext'
 import {
   esSesionMock, getCarrito, agregarItem, quitarItem, vaciarCarrito, confirmarCompra,
 } from '../services/api'
+import {
+  setCartItems, addCartItem, updateCartItemQuantity, removeCartItem, clearCart,
+} from '../store/slices/cartSlice'
 
 const CarritoContext = createContext(null)
 
-// Hay dos modos, según cómo se inició sesión:
-// - sesión REAL (token del back): el carrito vive en el back (/api/carritos/{usuarioId}).
-// - sesión MOCK (login sin back): el carrito se guarda en localStorage, uno por usuario.
+// El estado de los ítems vive en Redux (store.cart.items).
+// Hay dos modos de persistencia según cómo se inició sesión:
+// - sesión REAL (token del back): se sincroniza con /api/carritos/{usuarioId}.
+// - sesión MOCK (login sin back): se sincroniza con localStorage, un carrito por usuario.
 
-// carritos del modo mock, todos juntos: { [usuarioId]: [items] }
-const leerCarritos = () => {
+const leerCarritosLocal = () => {
   try {
     const guardado = localStorage.getItem('carritos')
     return guardado ? JSON.parse(guardado) : {}
@@ -20,43 +24,48 @@ const leerCarritos = () => {
   }
 }
 
+const guardarCarritoLocal = (usuarioId, nuevosItems) => {
+  if (!usuarioId) return
+  try {
+    const actuales = leerCarritosLocal()
+    localStorage.setItem('carritos', JSON.stringify({ ...actuales, [usuarioId]: nuevosItems }))
+  } catch { /* sin storage */ }
+}
+
 export const CarritoProvider = ({ children }) => {
   const { usuario } = useAuth()
-  const [carritos, setCarritos] = useState(leerCarritos)
-  const [itemsRemotos, setItemsRemotos] = useState([])
+  const dispatch = useDispatch()
+  // item = { id, casaca, cantidad, precioUnitario } (como ItemCarritoDTO, el subtotal se calcula)
+  const items = useSelector((state) => state.cart.items)
 
   const usuarioId = usuario?.id
   const remoto = Boolean(usuario) && !esSesionMock(usuario)
 
-  // useEffect con [usuarioId, remoto] -> al iniciar / cambiar la sesión, trae el
-  // carrito del usuario desde el back (GET /api/carritos/{usuarioId})
+  // useEffect con [usuarioId, remoto] -> al iniciar / cambiar la sesión, carga el
+  // carrito del usuario en el store de Redux (desde el back o desde localStorage)
   useEffect(() => {
+    if (!usuarioId) {
+      dispatch(clearCart())
+      return
+    }
     if (!remoto) {
-      setItemsRemotos([])
+      const guardados = leerCarritosLocal()[usuarioId] ?? []
+      dispatch(setCartItems(guardados))
       return
     }
     let vigente = true
     const cargar = async () => {
       try {
         const carrito = await getCarrito(usuario)
-        if (vigente) setItemsRemotos(carrito.items)
+        if (vigente) dispatch(setCartItems(carrito.items))
       } catch {
-        if (vigente) setItemsRemotos([])
+        if (vigente) dispatch(clearCart())
       }
     }
     cargar()
     return () => { vigente = false }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuarioId, remoto])
-
-  // item = { id, casaca, cantidad, precioUnitario } (como ItemCarritoDTO, el subtotal se calcula)
-  const items = remoto ? itemsRemotos : (usuarioId ? carritos[usuarioId] ?? [] : [])
-
-  const guardarLocal = (nuevosItems) => {
-    const nuevos = { ...carritos, [usuarioId]: nuevosItems }
-    setCarritos(nuevos)
-    try { localStorage.setItem('carritos', JSON.stringify(nuevos)) } catch { /* sin storage */ }
-  }
 
   // Todas las acciones son async: en modo real esperan al back y, si falla
   // (ej: "Stock insuficiente"), lanzan un Error con el mensaje para que la pantalla lo muestre.
@@ -65,7 +74,7 @@ export const CarritoProvider = ({ children }) => {
     if (!usuarioId) return
     if (remoto) {
       const carrito = await agregarItem(usuario, casaca.id, cantidad)
-      setItemsRemotos(carrito.items)
+      dispatch(setCartItems(carrito.items))
       return
     }
     const existente = items.find((i) => i.casaca.id === casaca.id)
@@ -73,14 +82,11 @@ export const CarritoProvider = ({ children }) => {
     if (nueva > casaca.stock) {
       throw new Error(`Stock insuficiente para la cantidad total. Disponible: ${casaca.stock}`)
     }
-    if (existente) {
-      guardarLocal(items.map((i) => (i.id === existente.id ? { ...i, cantidad: nueva } : i)))
-    } else {
-      guardarLocal([
-        ...items,
-        { id: Date.now(), casaca, cantidad, precioUnitario: casaca.precio },
-      ])
-    }
+    dispatch(addCartItem({ casaca, cantidad }))
+    const actualizados = existente
+      ? items.map((i) => (i.id === existente.id ? { ...i, cantidad: nueva } : i))
+      : [...items, { id: Date.now(), casaca, cantidad, precioUnitario: casaca.precio }]
+    guardarCarritoLocal(usuarioId, actualizados)
   }
 
   const cambiarCantidad = async (itemId, cantidad) => {
@@ -92,33 +98,39 @@ export const CarritoProvider = ({ children }) => {
       // si baja, quita el ítem y lo vuelve a agregar con la cantidad nueva
       if (nueva > item.cantidad) {
         const carrito = await agregarItem(usuario, item.casaca.id, nueva - item.cantidad)
-        setItemsRemotos(carrito.items)
+        dispatch(setCartItems(carrito.items))
       } else if (nueva < item.cantidad) {
         await quitarItem(usuario, itemId)
         const carrito = await agregarItem(usuario, item.casaca.id, nueva)
-        setItemsRemotos(carrito.items)
+        dispatch(setCartItems(carrito.items))
       }
       return
     }
-    guardarLocal(items.map((i) => (i.id === itemId ? { ...i, cantidad: nueva } : i)))
+    dispatch(updateCartItemQuantity({ itemId, cantidad: nueva }))
+    guardarCarritoLocal(
+      usuarioId,
+      items.map((i) => (i.id === itemId ? { ...i, cantidad: nueva } : i)),
+    )
   }
 
   const quitar = async (itemId) => {
     if (remoto) {
       const carrito = await quitarItem(usuario, itemId)
-      setItemsRemotos(carrito.items)
+      dispatch(setCartItems(carrito.items))
       return
     }
-    guardarLocal(items.filter((i) => i.id !== itemId))
+    dispatch(removeCartItem(itemId))
+    guardarCarritoLocal(usuarioId, items.filter((i) => i.id !== itemId))
   }
 
   const vaciar = async () => {
     if (remoto) {
       const carrito = await vaciarCarrito(usuario)
-      setItemsRemotos(carrito.items)
+      dispatch(setCartItems(carrito.items))
       return
     }
-    guardarLocal([])
+    dispatch(clearCart())
+    guardarCarritoLocal(usuarioId, [])
   }
 
   // Confirma la compra. En modo real descuenta el stock y cierra el carrito en el back
@@ -127,10 +139,10 @@ export const CarritoProvider = ({ children }) => {
     const resumen = { total, cantidad: items.length }
     if (remoto) {
       await confirmarCompra(usuario)
-      setItemsRemotos([])
     } else {
-      guardarLocal([])
+      guardarCarritoLocal(usuarioId, [])
     }
+    dispatch(clearCart())
     return resumen
   }
 
