@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
@@ -15,12 +15,19 @@ const Navbar = () => {
   const cantidadFavoritos = useSelector((state) => state.favorite.items.length)
   const { tema, alternar: alternarTema } = useTema()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [params] = useSearchParams()
+  const ligaActiva = params.get('liga')
+  const qUrl = params.get('q') ?? ''
 
   const [ligas, setLigas] = useState([])
-  const [busqueda, setBusqueda] = useState(params.get('q') ?? '')
+  const [busqueda, setBusqueda] = useState(qUrl)
   const [menuUsuario, setMenuUsuario] = useState(false)
   const [menuMovil, setMenuMovil] = useState(false)
+
+  useEffect(() => {
+    setBusqueda(qUrl)
+  }, [qUrl])
 
   // useEffect con [] -> corre una sola vez al montar. Las ligas son las
   // "categorías" de la barra inferior (GET /api/ligas).
@@ -44,7 +51,11 @@ const Navbar = () => {
   const buscar = (e) => {
     e.preventDefault()
     const q = busqueda.trim()
-    navigate(q ? `/?q=${encodeURIComponent(q)}` : '/')
+    const nuevos = new URLSearchParams()
+    if (ligaActiva) nuevos.set('liga', ligaActiva)
+    if (q) nuevos.set('q', q)
+    const query = nuevos.toString()
+    navigate(query ? `/?${query}` : '/')
     cerrarMenus()
   }
 
@@ -125,9 +136,18 @@ const Navbar = () => {
       </div>
 
       <nav className={menuMovil ? 'navbar__cats navbar__cats--abierto' : 'navbar__cats'}>
-        <NavLink to="/" end onClick={cerrarMenus}>Todas</NavLink>
+        <Link to="/" className={pathname === '/' && !ligaActiva ? 'active' : ''} onClick={cerrarMenus}>
+          Todas
+        </Link>
         {ligas.map((liga) => (
-          <Link key={liga.id} to={`/?liga=${liga.id}`} onClick={cerrarMenus}>{liga.nombre}</Link>
+          <Link
+            key={liga.id}
+            to={`/?liga=${liga.id}`}
+            className={pathname === '/' && ligaActiva === String(liga.id) ? 'active' : ''}
+            onClick={cerrarMenus}
+          >
+            {liga.nombre}
+          </Link>
         ))}
       </nav>
     </header>
