@@ -1,10 +1,12 @@
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import CasacaCard from '../components/CasacaCard'
 import EstadoVacio from '../components/EstadoVacio'
+import { clearFavorites } from '../store/slices/favoriteSlice'
 import './Home.css'
 import './Carrito.css'
 
 const Favoritos = () => {
+  const dispatch = useDispatch()
   // los favoritos ya tienen la casaca completa en el store: no hace falta
   // volver a pedir el catálogo al back (GET /api/casacas)
   const items = useSelector((state) => state.favorite.items)
@@ -24,7 +26,12 @@ const Favoritos = () => {
   return (
     <section>
       <h1 className="home__titulo">Tus favoritos</h1>
-      <p className="home__filtro">{favoritas.length} casaca(s) guardada(s)</p>
+      <p className="home__filtro">
+        {favoritas.length} casaca(s) guardada(s) ·{' '}
+        <button type="button" className="carrito__quitar" onClick={() => dispatch(clearFavorites())}>
+          Vaciar favoritos
+        </button>
+      </p>
       <div className="home__grid">
         {favoritas.map((casaca) => <CasacaCard key={casaca.id} casaca={casaca} />)}
       </div>

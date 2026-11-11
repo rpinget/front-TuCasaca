@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
 import { useTema } from '../context/TemaContext'
+import { clearFavorites } from '../store/slices/favoriteSlice'
 import { getLigas } from '../services/api'
 import './Navbar.css'
 
 const Navbar = () => {
   const { usuario, esAdmin, logout } = useAuth()
   const { cantidadTotal } = useCarrito()
+  const dispatch = useDispatch()
   const cantidadFavoritos = useSelector((state) => state.favorite.items.length)
   const { tema, alternar: alternarTema } = useTema()
   const navigate = useNavigate()
@@ -48,6 +50,7 @@ const Navbar = () => {
 
   const salir = () => {
     logout()
+    dispatch(clearFavorites())
     cerrarMenus()
     navigate('/')
   }
