@@ -8,7 +8,7 @@ const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
 
 // VITE_USE_MOCK=true fuerza a leer siempre los JSON locales de /public/data
 // (la consigna del TPO 03). Si no esta seteada, se intenta el back primero.
-const FORZAR_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+export const FORZAR_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 const TIMEOUT_MS = 2000          // lecturas: si el back no contesta se usa el mock
 const TIMEOUT_ESCRITURA_MS = 10000 // altas, compras, etc.: pueden tardar más
@@ -18,7 +18,7 @@ export const TOKEN_MOCK = 'mock-token'
 export const esSesionMock = (sesion) => sesion?.token === TOKEN_MOCK
 
 // Lee un JSON estatico de /public/data (misma forma que los DTOs del back).
-async function leerMock(archivo) {
+export async function leerMock(archivo) {
   const res = await fetch(`/data/${archivo}`)
   if (!res.ok) throw new Error(`No se pudo leer los datos locales (${archivo})`)
   return res.json()
@@ -31,7 +31,7 @@ async function leerMock(archivo) {
 // Si el back no esta levantado (fetch falla por red) se usa `mock()`, que lee
 // los JSON locales. Si el back responde con un error HTTP (404, 500...) NO se
 // hace fallback: ese error es real y se muestra.
-async function pedir(path, mock, token) {
+export async function pedir(path, mock, token) {
   // el login todavia es mock: ese token no sirve en el back, asi que se usan los JSON
   if (FORZAR_MOCK || token === TOKEN_MOCK) return mock()
   let res
@@ -45,7 +45,12 @@ async function pedir(path, mock, token) {
     return mock()
   }
   if (!res.ok) {
-    throw new Error(`Error ${res.status} al pedir ${path}`)
+    let mensaje = `Error ${res.status} al pedir ${path}`
+    try {
+      const detalle = await res.json()
+      if (detalle.message) mensaje = detalle.message
+    } catch { /* la respuesta no era JSON */ }
+    throw new Error(mensaje)
   }
   return res.json()
 }
@@ -84,7 +89,7 @@ export const getUsuarioMe = (sesion) =>
 // ApiErrorDTO (ej: "El email ya está registrado"). Si no hay conexion, el error
 // trae `sinConexion = true` para que quien llama decida si usa el mock.
 // ---------------------------------------------------------------------------
-async function enviar(metodo, path, { body, token } = {}) {
+export async function enviar(metodo, path, { body, token } = {}) {
   let res
   try {
     res = await fetch(`${BASE}${path}`, {
