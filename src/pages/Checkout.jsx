@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
 import Campo from '../components/Campo'
+import EstadoVacio from '../components/EstadoVacio'
 import './Carrito.css'
 import './Checkout.css'
 
@@ -25,11 +26,12 @@ const Checkout = () => {
 
   if (!usuario) {
     return (
-      <section className="carrito__vacio">
-        <h1>Checkout</h1>
-        <p>Ingresá a tu cuenta para finalizar la compra.</p>
-        <Link to="/login" className="carrito__btn">Ingresar</Link>
-      </section>
+      <EstadoVacio
+        titulo="Checkout"
+        mensaje="Ingresá a tu cuenta para finalizar la compra."
+        linkTexto="Ingresar"
+        linkTo="/login"
+      />
     )
   }
 
@@ -46,11 +48,12 @@ const Checkout = () => {
 
   if (items.length === 0) {
     return (
-      <section className="carrito__vacio">
-        <h1>No hay nada para pagar</h1>
-        <p>Tu carrito está vacío.</p>
-        <Link to="/" className="carrito__btn">Ver casacas</Link>
-      </section>
+      <EstadoVacio
+        titulo="No hay nada para pagar"
+        mensaje="Tu carrito está vacío."
+        linkTexto="Ver casacas"
+        linkTo="/"
+      />
     )
   }
 

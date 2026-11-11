@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
 import CamisetaImg from '../components/CamisetaImg'
+import EstadoVacio from '../components/EstadoVacio'
 import './Carrito.css'
 
 const formatear = (n) => `$${n.toLocaleString('es-AR')}`
@@ -27,21 +28,23 @@ const Carrito = () => {
 
   if (!usuario) {
     return (
-      <section className="carrito__vacio">
-        <h1>Carrito</h1>
-        <p>Ingresá a tu cuenta para ver tu carrito.</p>
-        <Link to="/login" className="carrito__btn">Ingresar</Link>
-      </section>
+      <EstadoVacio
+        titulo="Carrito"
+        mensaje="Ingresá a tu cuenta para ver tu carrito."
+        linkTexto="Ingresar"
+        linkTo="/login"
+      />
     )
   }
 
   if (items.length === 0) {
     return (
-      <section className="carrito__vacio">
-        <h1>Tu carrito está vacío</h1>
-        <p>Todavía no agregaste ninguna casaca.</p>
-        <Link to="/" className="carrito__btn">Ver casacas</Link>
-      </section>
+      <EstadoVacio
+        titulo="Tu carrito está vacío"
+        mensaje="Todavía no agregaste ninguna casaca."
+        linkTexto="Ver casacas"
+        linkTo="/"
+      />
     )
   }
 
