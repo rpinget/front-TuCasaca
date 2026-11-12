@@ -9,7 +9,8 @@ El back (Spring Boot) está en otro repositorio: `back-TuCasaca`.
 
 - React 19 + Vite
 - React Router (navegación entre pantallas)
-- Context API (sesión y carrito)
+- Redux Toolkit + React Redux (estado global de favoritos y carrito)
+- Context API (sesión, tema y acciones del carrito)
 - CSS propio, responsive para celular, tablet y escritorio
 
 ## Cómo correrlo
@@ -62,21 +63,31 @@ El mockup de todas las pantallas y el wireflow están en [`docs/TuCasaca_Mockup_
 ```
 public/data/          Datos mock en JSON (ver más abajo)
 src/
-  main.jsx            Punto de entrada: Router y contextos
+  main.jsx            Punto de entrada: Provider de Redux, Router y contextos
   App.jsx             Layout y definición de rutas
   index.css           Variables de diseño (colores, tipografías)
+  store/
+    store.js          Tienda global de Redux Toolkit
+    slices/
+      favoriteSlice.js  Estado global de casacas favoritas
+      cartSlice.js      Estado global de ítems del carrito
   context/
     AuthContext.jsx     Sesión del usuario (login, logout, rol)
-    CarritoContext.jsx  Carrito de cada usuario
-    FavoritosContext.jsx  Favoritos de cada usuario
+    CarritoContext.jsx  Sincronización del carrito (back / localStorage) con Redux
     TemaContext.jsx     Modo claro / oscuro
+  services/
+    api.js              Cliente HTTP hacia el back con fallback a mocks
+    usuariosApi.js      Endpoints de gestión de usuarios para Admin
   components/
     Navbar              Buscador, categorías por liga, menú de usuario, carrito
     Footer
     CasacaCard          Tarjeta de casaca del listado
     CamisetaImg         Foto de la casaca o camiseta dibujada si no hay foto
+    FavoritoBtn         Botón de corazón conectado a Redux
+    Campo               Campo reutilizable de formulario con validación
+    EstadoVacio         Componente reutilizable para pantallas sin resultados
   pages/
-    Home, Detalle, Login, Registro, Carrito, Checkout, Perfil, Favoritos, Admin, NotFound
+    Home, Detalle, Login, Registro, Carrito, Checkout, Perfil, Favoritos, Admin, AdminUsuarios, NotFound
 ```
 
 ## De dónde salen los datos (mock)
@@ -93,6 +104,7 @@ cambiar solamente la URL.
 | `equipos.json` | `GET /api/equipos` | `EquipoDTO` |
 | `login.json` | respuesta de `POST /api/auth/login` | `LoginResponseDTO` |
 | `usuario.json` | `GET /api/usuarios/me` | `UsuarioResponseDTO` |
+| `usuarios.json` | `GET /api/usuarios` | `UsuarioResponseDTO[]` |
 | `carrito.json` | `GET /api/carritos/{usuarioId}` | `CarritoDTO` / `ItemCarritoDTO` |
 | `usuarios-demo.json` | solo para simular el login | no existe en el back |
 
@@ -128,7 +140,7 @@ Las pantallas usan `fetch` + `useEffect` / handlers `async` y muestran el `messa
 | Perfil | `GET /api/usuarios/me` |
 | Carrito | `GET /api/carritos/{usuarioId}`, `POST .../items`, `DELETE .../items/{itemId}`, `DELETE .../vaciar` |
 | Checkout | `POST /api/carritos/{usuarioId}/checkout` |
-| Admin | `GET /api/equipos`, `POST /api/casacas`, `PUT /api/casacas/{id}`, `DELETE /api/casacas/{id}` |
+| Admin | `GET /api/equipos`, `POST /api/casacas`, `PUT /api/casacas/{id}`, `DELETE /api/casacas/{id}`, `GET /api/usuarios`, `DELETE /api/usuarios/admin/{id}` |
 
 - **Back levantado:** se usan los endpoints reales. En el back, el origen `http://localhost:5173` ya está permitido por CORS.
 - **Back apagado:** el front sigue funcionando con los JSON de `public/data` (misma forma que los DTOs).
@@ -137,5 +149,5 @@ Las pantallas usan `fetch` + `useEffect` / handlers `async` y muestran el `messa
 ## Extras
 
 - Ordenamiento del catálogo por precio o año (selector en el Inicio).
-- **Favoritos:** corazón en cada casaca y página `/favoritos` (se guardan en `localStorage`, por usuario).
+- **Favoritos:** corazón en cada casaca y página `/favoritos` (administrado en memoria con Redux Toolkit).
 - **Modo oscuro:** botón ☾/☀ en el Navbar. Recuerda la elección y respeta la preferencia del sistema.

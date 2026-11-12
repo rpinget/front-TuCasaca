@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
   getCasacas, getLigas, getEquipos, crearCasaca, editarCasaca, eliminarCasaca, esSesionMock,
 } from '../services/api'
 import Campo from '../components/Campo'
+import EstadoVacio from '../components/EstadoVacio'
 import './Auth.css'
 import './Carrito.css'
 import './Admin.css'
@@ -70,11 +71,12 @@ const Admin = () => {
   if (!usuario) return <Navigate to="/login" replace />
   if (!esAdmin) {
     return (
-      <section className="carrito__vacio">
-        <h1>Acceso restringido</h1>
-        <p>Esta sección es solo para administradores.</p>
-        <Link to="/" className="carrito__btn">Volver al inicio</Link>
-      </section>
+      <EstadoVacio
+        titulo="Acceso restringido"
+        mensaje="Esta sección es solo para administradores."
+        linkTexto="Volver al inicio"
+        linkTo="/"
+      />
     )
   }
 

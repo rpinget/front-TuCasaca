@@ -29,6 +29,9 @@ const Detalle = () => {
     const cargarCasaca = async () => {
       try {
         setLoading(true)
+        setAgregado(false)
+        setErrorCarrito(null)
+        setCantidad(1)
         const data = await getCasaca(id)
         setCasaca(data)
         setError(null)
