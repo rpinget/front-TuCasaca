@@ -19,7 +19,7 @@ const Detalle = () => {
   const [errorCarrito, setErrorCarrito] = useState(null)
 
   const { usuario } = useAuth()
-  const { agregar } = useCarrito()
+  const { agregar, loading: guardandoCarrito } = useCarrito()
   const navigate = useNavigate()
 
   // useEffect con [id] -> se vuelve a ejecutar cada vez que cambia el id de la
@@ -100,8 +100,16 @@ const Detalle = () => {
                   <option key={n} value={n}>{n}</option>
                 ))}
               </select>
-              <button className="detalle__btn" onClick={agregarAlCarrito}>
-                {usuario ? 'Agregar al carrito' : 'Ingresá para comprar'}
+              <button
+                className="detalle__btn"
+                onClick={agregarAlCarrito}
+                disabled={guardandoCarrito}
+              >
+                {guardandoCarrito
+                  ? 'Agregando...'
+                  : usuario
+                    ? 'Agregar al carrito'
+                    : 'Ingresá para comprar'}
               </button>
               <FavoritoBtn casaca={casaca} />
             </div>

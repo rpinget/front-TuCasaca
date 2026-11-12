@@ -2,10 +2,17 @@ import { createContext, useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from './AuthContext'
 import {
-  esSesionMock, agregarItem, quitarItem, vaciarCarrito, confirmarCompra,
+  esSesionMock, vaciarCarrito, confirmarCompra,
 } from '../services/api'
 import {
-  setCartItems, addCartItem, updateCartItemQuantity, removeCartItem, clearCart, fetchCart,
+  setCartItems,
+  addCartItem,
+  updateCartItemQuantity,
+  removeCartItem,
+  clearCart,
+  fetchCart,
+  addToCart,
+  remFromCart,
 } from '../store/slices/cartSlice'
 
 const CarritoContext = createContext(null)
@@ -65,8 +72,7 @@ export const CarritoProvider = ({ children }) => {
   const agregar = async (casaca, cantidad = 1) => {
     if (!usuarioId) return
     if (remoto) {
-      const carrito = await agregarItem(usuario, casaca.id, cantidad)
-      dispatch(setCartItems(carrito.items))
+      await dispatch(addToCart({ usuario, casacaId: casaca.id, cantidad })).unwrap()
       return
     }
     const existente = items.find((i) => i.casaca.id === casaca.id)
@@ -89,12 +95,14 @@ export const CarritoProvider = ({ children }) => {
       // el back solo sabe sumar o quitar ítems: si sube, suma la diferencia;
       // si baja, quita el ítem y lo vuelve a agregar con la cantidad nueva
       if (nueva > item.cantidad) {
-        const carrito = await agregarItem(usuario, item.casaca.id, nueva - item.cantidad)
-        dispatch(setCartItems(carrito.items))
+        await dispatch(
+          addToCart({ usuario, casacaId: item.casaca.id, cantidad: nueva - item.cantidad }),
+        ).unwrap()
       } else if (nueva < item.cantidad) {
-        await quitarItem(usuario, itemId)
-        const carrito = await agregarItem(usuario, item.casaca.id, nueva)
-        dispatch(setCartItems(carrito.items))
+        await dispatch(remFromCart({ usuario, itemId })).unwrap()
+        await dispatch(
+          addToCart({ usuario, casacaId: item.casaca.id, cantidad: nueva }),
+        ).unwrap()
       }
       return
     }
@@ -107,8 +115,7 @@ export const CarritoProvider = ({ children }) => {
 
   const quitar = async (itemId) => {
     if (remoto) {
-      const carrito = await quitarItem(usuario, itemId)
-      dispatch(setCartItems(carrito.items))
+      await dispatch(remFromCart({ usuario, itemId })).unwrap()
       return
     }
     dispatch(removeCartItem(itemId))

@@ -1,11 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getCarrito } from '../../services/api'
+import { getCarrito, agregarItem, quitarItem } from '../../services/api'
 
-// Thunk asíncrono para cargar el carrito desde el backend.
-// Dispara automáticamente las acciones:
-// - fetchCart.pending
-// - fetchCart.fulfilled
-// - fetchCart.rejected
+// Thunk asíncrono para cargar el carrito de un usuario desde el backend (GET).
 export const fetchCart = createAsyncThunk(
   'cart/fetchCart',
   async (usuario, { rejectWithValue }) => {
@@ -14,6 +10,33 @@ export const fetchCart = createAsyncThunk(
       return data.items ?? []
     } catch (err) {
       return rejectWithValue(err.message || 'Error al cargar el carrito')
+    }
+  },
+)
+
+// Thunk asíncrono para agregar un ítem al carrito en el backend (POST /api/carritos/{usuarioId}/items).
+// Impacta directamente en la base de datos MySQL (tabla items_carrito).
+export const addToCart = createAsyncThunk(
+  'cart/addToCart',
+  async ({ usuario, casacaId, cantidad = 1 }, { rejectWithValue }) => {
+    try {
+      const data = await agregarItem(usuario, casacaId, cantidad)
+      return data.items ?? []
+    } catch (err) {
+      return rejectWithValue(err.message || 'Error al agregar la casaca al carrito')
+    }
+  },
+)
+
+// Thunk asíncrono para eliminar un ítem del carrito en el backend (DELETE /api/carritos/{usuarioId}/items/{itemId}).
+export const remFromCart = createAsyncThunk(
+  'cart/remFromCart',
+  async ({ usuario, itemId }, { rejectWithValue }) => {
+    try {
+      const data = await quitarItem(usuario, itemId)
+      return data.items ?? []
+    } catch (err) {
+      return rejectWithValue(err.message || 'Error al eliminar el ítem del carrito')
     }
   },
 )
@@ -30,14 +53,14 @@ const cartSlice = createSlice({
   },
 
   reducers: {
-    // Reemplaza la lista completa (al cargar el carrito del back o de localStorage)
+    // Reemplaza la lista completa (al cargar el carrito o en mock)
     setCartItems: (state, action) => {
       state.items = action.payload
       state.loading = false
       state.error = null
     },
 
-    // Agrega una casaca o suma cantidad si ya estaba en el carrito
+    // Agrega una casaca localmente (modo mock sin backend)
     addCartItem: (state, action) => {
       const { casaca, cantidad } = action.payload
       const existente = state.items.find((i) => i.casaca.id === casaca.id)
@@ -53,7 +76,7 @@ const cartSlice = createSlice({
       }
     },
 
-    // Cambia la cantidad de un ítem existente
+    // Cambia la cantidad de un ítem existente localmente
     updateCartItemQuantity: (state, action) => {
       const { itemId, cantidad } = action.payload
       const item = state.items.find((i) => i.id === itemId)
@@ -62,7 +85,7 @@ const cartSlice = createSlice({
       }
     },
 
-    // Quita un ítem por su id
+    // Quita un ítem por su id localmente
     removeCartItem: (state, action) => {
       const itemId = action.payload
       state.items = state.items.filter((i) => i.id !== itemId)
@@ -77,21 +100,49 @@ const cartSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // 1. PENDING: La promesa está en vuelo -> activamos spinner y limpiamos error previo
+      // 1. fetchCart (GET)
       .addCase(fetchCart.pending, (state) => {
         state.loading = true
         state.error = null
       })
-      // 2. FULFILLED: La promesa se resolvió exitosamente -> guardamos los ítems y apagamos loading
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false
         state.items = action.payload
         state.error = null
       })
-      // 3. REJECTED: La promesa falló (401, error de red, etc.) -> apagamos loading y guardamos el error
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload || action.error.message || 'Error al obtener el carrito'
+      })
+
+      // 2. addToCart (POST)
+      .addCase(addToCart.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.loading = false
+        state.items = action.payload
+        state.error = null
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload || action.error.message || 'Error al agregar al carrito'
+      })
+
+      // 3. remFromCart (DELETE)
+      .addCase(remFromCart.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(remFromCart.fulfilled, (state, action) => {
+        state.loading = false
+        state.items = action.payload
+        state.error = null
+      })
+      .addCase(remFromCart.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload || action.error.message || 'Error al eliminar del carrito'
       })
   },
 })
@@ -105,5 +156,3 @@ export const {
 } = cartSlice.actions
 
 export default cartSlice.reducer
-
-
