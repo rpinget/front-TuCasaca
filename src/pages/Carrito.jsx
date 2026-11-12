@@ -10,7 +10,15 @@ const formatear = (n) => `$${n.toLocaleString('es-AR')}`
 
 const Carrito = () => {
   const { usuario } = useAuth()
-  const { items, total, cambiarCantidad: cambiar, quitar: quitarItem, vaciar: vaciarTodo } = useCarrito()
+  const {
+    items,
+    total,
+    loading,
+    error: errorRedux,
+    cambiarCantidad: cambiar,
+    quitar: quitarItem,
+    vaciar: vaciarTodo,
+  } = useCarrito()
   const [error, setError] = useState(null)
 
   // cada acción puede fallar en el back (ej: stock insuficiente): se muestra el mensaje
@@ -37,21 +45,27 @@ const Carrito = () => {
     )
   }
 
+  if (loading && items.length === 0) {
+    return <p>Cargando carrito...</p>
+  }
+
   if (items.length === 0) {
     return (
       <EstadoVacio
         titulo="Tu carrito está vacío"
-        mensaje="Todavía no agregaste ninguna casaca."
+        mensaje={errorRedux || "Todavía no agregaste ninguna casaca."}
         linkTexto="Ver casacas"
         linkTo="/"
       />
     )
   }
 
+  const mensajeError = error || errorRedux
+
   return (
     <section>
       <h1>Carrito</h1>
-      {error && <p className="carrito__error" role="alert">{error}</p>}
+      {mensajeError && <p className="carrito__error" role="alert">{mensajeError}</p>}
 
       <div className="carrito">
         <ul className="carrito__lista">

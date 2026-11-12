@@ -2,10 +2,10 @@ import { createContext, useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAuth } from './AuthContext'
 import {
-  esSesionMock, getCarrito, agregarItem, quitarItem, vaciarCarrito, confirmarCompra,
+  esSesionMock, agregarItem, quitarItem, vaciarCarrito, confirmarCompra,
 } from '../services/api'
 import {
-  setCartItems, addCartItem, updateCartItemQuantity, removeCartItem, clearCart,
+  setCartItems, addCartItem, updateCartItemQuantity, removeCartItem, clearCart, fetchCart,
 } from '../store/slices/cartSlice'
 
 const CarritoContext = createContext(null)
@@ -37,12 +37,14 @@ export const CarritoProvider = ({ children }) => {
   const dispatch = useDispatch()
   // item = { id, casaca, cantidad, precioUnitario } (como ItemCarritoDTO, el subtotal se calcula)
   const items = useSelector((state) => state.cart.items)
+  const loading = useSelector((state) => state.cart.loading)
+  const error = useSelector((state) => state.cart.error)
 
   const usuarioId = usuario?.id
   const remoto = Boolean(usuario) && !esSesionMock(usuario)
 
   // useEffect con [usuarioId, remoto] -> al iniciar / cambiar la sesión, carga el
-  // carrito del usuario en el store de Redux (desde el back o desde localStorage)
+  // carrito del usuario en el store de Redux (desde el back via thunk o desde localStorage)
   useEffect(() => {
     if (!usuarioId) {
       dispatch(clearCart())
@@ -53,17 +55,7 @@ export const CarritoProvider = ({ children }) => {
       dispatch(setCartItems(guardados))
       return
     }
-    let vigente = true
-    const cargar = async () => {
-      try {
-        const carrito = await getCarrito(usuario)
-        if (vigente) dispatch(setCartItems(carrito.items))
-      } catch {
-        if (vigente) dispatch(clearCart())
-      }
-    }
-    cargar()
-    return () => { vigente = false }
+    dispatch(fetchCart(usuario))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuarioId, remoto])
 
@@ -151,7 +143,18 @@ export const CarritoProvider = ({ children }) => {
 
   return (
     <CarritoContext.Provider
-      value={{ items, total, cantidadTotal, agregar, cambiarCantidad, quitar, vaciar, finalizarCompra }}
+      value={{
+        items,
+        loading,
+        error,
+        total,
+        cantidadTotal,
+        agregar,
+        cambiarCantidad,
+        quitar,
+        vaciar,
+        finalizarCompra,
+      }}
     >
       {children}
     </CarritoContext.Provider>

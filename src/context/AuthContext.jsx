@@ -1,40 +1,63 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  setUsuario,
+  logout as logoutAction,
+  clearAuthError,
+  loginUser,
+} from '../store/slices/authSlice'
 
 const AuthContext = createContext(null)
 
-// lee la sesión guardada (si existe) sin romper si localStorage no está disponible
-const leerSesion = () => {
-  try {
-    const guardado = localStorage.getItem('usuario')
-    return guardado ? JSON.parse(guardado) : null
-  } catch {
-    return null
-  }
-}
-
 export const AuthProvider = ({ children }) => {
-  // usuario = { token, id, email, nombre, rol } (misma forma que LoginResponseDTO) o null
-  const [usuario, setUsuario] = useState(leerSesion)
+  const dispatch = useDispatch()
+  const usuario = useSelector((state) => state.auth.usuario)
+  const loading = useSelector((state) => state.auth.loading)
+  const error = useSelector((state) => state.auth.error)
 
-  const login = (datos) => {
-    setUsuario(datos)
-    try { localStorage.setItem('usuario', JSON.stringify(datos)) } catch { /* sin storage */ }
-  }
+  const login = useCallback(
+    (datos) => {
+      dispatch(setUsuario(datos))
+    },
+    [dispatch],
+  )
 
-  const logout = () => {
-    setUsuario(null)
-    try { localStorage.removeItem('usuario') } catch { /* sin storage */ }
-  }
+  const logout = useCallback(() => {
+    dispatch(logoutAction())
+  }, [dispatch])
+
+  // Despacha el thunk loginUser y retorna el payload o lanza error con .unwrap()
+  const iniciarSesion = useCallback(
+    async (email, password) => {
+      return dispatch(loginUser({ email, password })).unwrap()
+    },
+    [dispatch],
+  )
+
+  const limpiarError = useCallback(() => {
+    dispatch(clearAuthError())
+  }, [dispatch])
 
   const esAdmin = usuario?.rol === 'ADMIN'
 
   return (
-    <AuthContext.Provider value={{ usuario, esAdmin, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        usuario,
+        esAdmin,
+        loading,
+        error,
+        login,
+        logout,
+        iniciarSesion,
+        limpiarError,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
 }
 
-// hook propio para usar el contexto más corto en los componentes
+// Hook propio para consumir el contexto en los componentes
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext)
