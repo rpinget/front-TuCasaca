@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
   getCasacas, getLigas, getEquipos, crearCasaca, editarCasaca, eliminarCasaca, esSesionMock,
 } from '../services/api'
 import Campo from '../components/Campo'
-import EstadoVacio from '../components/EstadoVacio'
 import './Auth.css'
 import './Carrito.css'
 import './Admin.css'
@@ -66,19 +64,6 @@ const Admin = () => {
     }
     cargar()
   }, [esAdmin])
-
-  // la ruta es solo para ADMIN (en el back lo valida Spring Security)
-  if (!usuario) return <Navigate to="/login" replace />
-  if (!esAdmin) {
-    return (
-      <EstadoVacio
-        titulo="Acceso restringido"
-        mensaje="Esta sección es solo para administradores."
-        linkTexto="Volver al inicio"
-        linkTo="/"
-      />
-    )
-  }
 
   if (loading) return <p>Cargando casacas...</p>
   if (error) return <p>Error: {error}</p>

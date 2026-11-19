@@ -11,6 +11,7 @@ import Admin from './pages/Admin'
 import Favoritos from './pages/Favoritos'
 import Perfil from './pages/Perfil'
 import NotFound from './pages/NotFound'
+import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 
 function App() {
@@ -23,11 +24,14 @@ function App() {
           <Route path="/casacas/:id" element={<Detalle />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
-          <Route path="/carrito" element={<Carrito />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/favoritos" element={<Favoritos />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/admin" element={<Admin />} />
+
+          <Route path="/carrito" element={<ProtectedRoute><Carrito /></ProtectedRoute>} />
+          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          <Route path="/favoritos" element={<ProtectedRoute><Favoritos /></ProtectedRoute>} />
+          <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+
+          <Route path="/admin" element={<ProtectedRoute rol="ADMIN"><Admin /></ProtectedRoute>} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

@@ -24,17 +24,6 @@ const Checkout = () => {
   })
   const [errores, setErrores] = useState({})
 
-  if (!usuario) {
-    return (
-      <EstadoVacio
-        titulo="Checkout"
-        mensaje="Ingresá a tu cuenta para finalizar la compra."
-        linkTexto="Ingresar"
-        linkTo="/login"
-      />
-    )
-  }
-
   if (confirmada) {
     return (
       <section className="carrito__vacio">

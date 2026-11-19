@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import { useCarrito } from '../context/CarritoContext'
 import CamisetaImg from '../components/CamisetaImg'
 import EstadoVacio from '../components/EstadoVacio'
@@ -9,7 +8,6 @@ import './Carrito.css'
 const formatear = (n) => `$${n.toLocaleString('es-AR')}`
 
 const Carrito = () => {
-  const { usuario } = useAuth()
   const {
     items,
     total,
@@ -33,17 +31,6 @@ const Carrito = () => {
   const cambiarCantidad = (id, cantidad) => ejecutar(() => cambiar(id, cantidad))
   const quitar = (id) => ejecutar(() => quitarItem(id))
   const vaciar = () => ejecutar(() => vaciarTodo())
-
-  if (!usuario) {
-    return (
-      <EstadoVacio
-        titulo="Carrito"
-        mensaje="Ingresá a tu cuenta para ver tu carrito."
-        linkTexto="Ingresar"
-        linkTo="/login"
-      />
-    )
-  }
 
   if (loading && items.length === 0) {
     return <p>Cargando carrito...</p>

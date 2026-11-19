@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getUsuarioMe } from '../services/api'
 import './Carrito.css'
@@ -32,7 +32,6 @@ const Perfil = () => {
     cargar()
   }, [usuario])
 
-  if (!usuario) return <Navigate to="/login" replace />
   if (loading) return <p>Cargando perfil...</p>
   if (error) {
     return (
