@@ -17,7 +17,12 @@ const TIMEOUT_ESCRITURA_MS = 10000 // altas, compras, etc.: pueden tardar más
 export const TOKEN_MOCK = 'mock-token'
 export const esSesionMock = (sesion) => sesion?.token === TOKEN_MOCK
 
-async function errorDeRespuesta(res, path) {
+// store.js registra el callback: importar el store acá generaría un import circular.
+let alExpirarSesion = () => {}
+export const onSesionExpirada = (callback) => { alExpirarSesion = callback }
+
+async function errorDeRespuesta(res, path, token) {
+  if (res.status === 401 && token) alExpirarSesion()
   let mensaje = `Error ${res.status} al pedir ${path}`
   try {
     const detalle = await res.json()
@@ -53,7 +58,7 @@ export async function pedir(path, mock, token) {
   } catch {
     return mock()
   }
-  if (!res.ok) throw await errorDeRespuesta(res, path)
+  if (!res.ok) throw await errorDeRespuesta(res, path, token)
   return res.json()
 }
 
@@ -108,7 +113,7 @@ export async function enviar(metodo, path, { body, token } = {}) {
     error.sinConexion = true
     throw error
   }
-  if (!res.ok) throw await errorDeRespuesta(res, path)
+  if (!res.ok) throw await errorDeRespuesta(res, path, token)
   return res.status === 204 ? null : res.json()
 }
 

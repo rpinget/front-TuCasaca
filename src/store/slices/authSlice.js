@@ -53,6 +53,16 @@ const authSlice = createSlice({
       }
     },
 
+    sesionExpirada: (state) => {
+      state.usuario = null
+      state.error = 'Tu sesión expiró. Volvé a ingresar.'
+      try {
+        localStorage.removeItem('usuario')
+      } catch {
+        // sin storage disponible
+      }
+    },
+
     // Establece o actualiza manualmente la sesión (p. ej. tras registro exitoso)
     setUsuario: (state, action) => {
       state.usuario = action.payload
@@ -91,6 +101,6 @@ const authSlice = createSlice({
   },
 })
 
-export const { logout, setUsuario, clearAuthError } = authSlice.actions
+export const { logout, sesionExpirada, setUsuario, clearAuthError } = authSlice.actions
 
 export default authSlice.reducer
