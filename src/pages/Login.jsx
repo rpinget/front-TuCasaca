@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Campo from '../components/Campo'
 import './Auth.css'
@@ -7,12 +7,13 @@ import './Auth.css'
 const Login = () => {
   const { usuario, iniciarSesion, loading, error: authError, limpiarError } = useAuth()
   const navigate = useNavigate()
+  const destino = useLocation().state?.desde ?? '/'
 
   const [form, setForm] = useState({ email: '', password: '' })
   const [errorLocal, setErrorLocal] = useState(null)
 
   // si ya hay sesión, no tiene sentido mostrar el login
-  if (usuario) return <Navigate to="/" replace />
+  if (usuario) return <Navigate to={destino} replace />
 
   const cambiar = (e) => {
     if (authError) limpiarError()
@@ -32,7 +33,7 @@ const Login = () => {
     try {
       // Despacha loginUser via Redux Toolkit thunk
       await iniciarSesion(form.email, form.password)
-      navigate('/')
+      navigate(destino, { replace: true })
     } catch {
       // El error de backend/red ya fue capturado y almacenado en auth.error por Redux
     }
