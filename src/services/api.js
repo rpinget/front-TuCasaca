@@ -17,6 +17,15 @@ const TIMEOUT_ESCRITURA_MS = 10000 // altas, compras, etc.: pueden tardar más
 export const TOKEN_MOCK = 'mock-token'
 export const esSesionMock = (sesion) => sesion?.token === TOKEN_MOCK
 
+async function errorDeRespuesta(res, path) {
+  let mensaje = `Error ${res.status} al pedir ${path}`
+  try {
+    const detalle = await res.json()
+    if (detalle.message) mensaje = detalle.message
+  } catch { /* la respuesta no era JSON */ }
+  return new Error(mensaje)
+}
+
 // Lee un JSON estatico de /public/data (misma forma que los DTOs del back).
 export async function leerMock(archivo) {
   const res = await fetch(`/data/${archivo}`)
@@ -44,14 +53,7 @@ export async function pedir(path, mock, token) {
   } catch {
     return mock()
   }
-  if (!res.ok) {
-    let mensaje = `Error ${res.status} al pedir ${path}`
-    try {
-      const detalle = await res.json()
-      if (detalle.message) mensaje = detalle.message
-    } catch { /* la respuesta no era JSON */ }
-    throw new Error(mensaje)
-  }
+  if (!res.ok) throw await errorDeRespuesta(res, path)
   return res.json()
 }
 
@@ -106,14 +108,7 @@ export async function enviar(metodo, path, { body, token } = {}) {
     error.sinConexion = true
     throw error
   }
-  if (!res.ok) {
-    let mensaje = `Error ${res.status} al pedir ${path}`
-    try {
-      const detalle = await res.json()
-      if (detalle.message) mensaje = detalle.message
-    } catch { /* la respuesta no era JSON */ }
-    throw new Error(mensaje)
-  }
+  if (!res.ok) throw await errorDeRespuesta(res, path)
   return res.status === 204 ? null : res.json()
 }
 
